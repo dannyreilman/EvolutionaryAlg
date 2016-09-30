@@ -11,10 +11,10 @@ public:
 	/*
 	 * Method to change internal values
 	 */
-	virtual void Mutate();
+	virtual void Mutate() = 0;
 
 	/*
 	 * Method to clone the Subject
 	 */
-	virtual Subject Clone();
+	virtual Subject* Clone() = 0;
 };

@@ -1,4 +1,4 @@
-/*
+/* Test..................................
  * Generic class to handle fitness evaluation of subjects 
  * By Danny Reilman <reilman@umich.edu>
  */
@@ -8,5 +8,5 @@
 class FitnessEvaluator
 {
 public:
-	virtual double Evaluate(Subject);
+	virtual double Evaluate(Subject*) = 0;
 };

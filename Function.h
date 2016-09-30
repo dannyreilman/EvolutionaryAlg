@@ -1,4 +1,4 @@
-/* 
+/*
  * General function form, for defining valid moves
  * By Danny Reilman <reilman@umich.edu>
  */
@@ -7,11 +7,11 @@ public:
 	/*
 	 * Returns the number of arguments that should be sent into evaluate
 	 */
-	int numArgs();
+	virtual int GetNumArgs() = 0;
 
 	/*
-	 * Requires: arguments.length == numArgs();
+	 * Requires: arguments.length == getNumArgs();
 	 *  Returns the function evaluated over the arguments.
 	 */
-	int eval(int[]);
+	virtual int Eval(int[]) = 0;
 };
