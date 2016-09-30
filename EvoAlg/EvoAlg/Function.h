@@ -1,4 +1,4 @@
-/*
+/* Test
  * General function form, for defining valid moves
  * By Danny Reilman <reilman@umich.edu>
  */

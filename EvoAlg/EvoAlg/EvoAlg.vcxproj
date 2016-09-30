@@ -118,7 +118,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="..\Function.h" />
+    <ClInclude Include="Function.h" />
     <ClInclude Include="Subject.h" />
     <ClInclude Include="FitnessEvaluator.h" />
   </ItemGroup>
