@@ -2,6 +2,9 @@
  * General function form, for defining valid moves
  * By Danny Reilman <reilman@umich.edu>
  */
+#include <vector>
+#include "EvaluateToDouble.h"
+
 class Function {
 public:
 	/*
@@ -13,5 +16,5 @@ public:
 	 * Requires: arguments.length == getNumArgs();
 	 *  Returns the function evaluated over the arguments.
 	 */
-	virtual int Eval(int[]) = 0;
+	virtual int Eval(const vector<EvaluateToDouble*>) = 0;
 };
