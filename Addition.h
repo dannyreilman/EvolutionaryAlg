@@ -13,13 +13,13 @@ public:
     /*
     * Returns: NUM_SUPPORTED_ARGS, the length of args that eval(args) will accept
     */
-    int GetNumArgs();
+    int GetNumArgs() const;
 
     /*
      * REQUIRES: args.size == NUM_SUPPORTED_ARGS
      * RETURNS: Let args be [a, b], then Eval returns a + b
      */
-    double Eval(const vector<EvaluateToDouble*>);
+    double Eval(const vector<EvaluateToDouble*>) const;
 private:
     const int NUM_SUPPORTED_ARGS;
 };

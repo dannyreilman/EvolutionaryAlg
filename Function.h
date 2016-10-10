@@ -10,11 +10,17 @@ public:
 	/*
 	 * Returns the number of arguments that should be sent into evaluate
 	 */
-	virtual int GetNumArgs() = 0;
+	virtual int GetNumArgs() const = 0;
 
 	/*
 	 * Requires: arguments.length == getNumArgs();
 	 *  Returns the function evaluated over the arguments.
 	 */
-	virtual int Eval(const vector<EvaluateToDouble*>) = 0;
+	virtual int Eval(const vector<EvaluateToDouble*>) const = 0;
+
+	
+	/*
+	 * Determines if a function has an identity
+	 */
+	 bool HasIdentity() const;
 };

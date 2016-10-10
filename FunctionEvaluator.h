@@ -1,4 +1,5 @@
 /*
+ * Interface
  * A class that holds a function
  * and evaluates it to an EvaluateToDouble
  * By Danny Reilman <reilman@umich.edu>
@@ -9,9 +10,9 @@
 class FunctionEvaluator : public EvaluateToDouble
 {
 public:
-    FunctionEvaluator(vector<EvaluateToDouble*>, Function*);
-    double EvaluateToDouble();
+    FunctionEvaluator(const vector<EvaluateToDouble*>, const Function*);
+    double EvaluateToDouble() const;
 private:
     vector<EvaluateToDouble*> args;
-    Function* fun;
+    const Function* func;
 };
