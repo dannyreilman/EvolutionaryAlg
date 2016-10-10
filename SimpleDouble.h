@@ -1,4 +1,5 @@
 /*
+ * Interface
  * An EvaluateToDouble that simply acts as a double
  * By Danny Reilman <reilman@umich.edu>
  */
