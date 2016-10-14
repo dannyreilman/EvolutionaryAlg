@@ -1,15 +1,31 @@
 #include "Function.h"
 #include "SimpleDouble.h"
+#include <iostream>
 #include <cassert>
+#include <memory>
+using namespace std;
 
-bool Function::HasIdentity() const
-{
-    return false;
-}
+/*
+ * Default constructor does nothing
+ */
+Function::Function() {}
 
-FunctionEvaluator* Function::CreateIdentity() const
+/*
+ * Destructor to do nothing
+ */ 
+Function::~Function() {}
+
+/*
+ * Allows for evaluation of unique_ptrs
+ */
+double Function::Eval(const vector<unique_ptr<EvaluateToDouble>>& vec) const
 {
-    assert(HasIdentity());
-    FunctionEvaluator returnEval = new FunctionEvaluator(new vector<EvaluateToDouble>(2, new SimpleDouble(0)));
-    return &FunctionEvaluator;
+	vector<EvaluateToDouble*> rawPtrVec;
+
+	for (int i =0; i < GetNumArgs(); i++)
+	{
+		rawPtrVec.push_back(vec.at(i).get());
+	}
+	
+	return Eval(rawPtrVec);
 }

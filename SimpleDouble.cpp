@@ -11,3 +11,13 @@ SimpleDouble::SimpleDouble(double double_in) :
 //init to 0
 SimpleDouble::SimpleDouble() : internalDouble(0){}
 
+double SimpleDouble::GetDouble() const
+{
+    return internalDouble;
+}
+
+void SimpleDouble::SetDouble(double setDouble)
+{
+    internalDouble = setDouble;
+}
+

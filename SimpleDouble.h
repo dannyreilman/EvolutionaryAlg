@@ -1,3 +1,6 @@
+#ifndef SIMPLEDOUBLE_H
+#define SIMPLEDOUBLE_H
+
 /*
  * Interface
  * An EvaluateToDouble that simply acts as a double
@@ -10,8 +13,10 @@ class SimpleDouble : public EvaluateToDouble
 public: 
     SimpleDouble(double);
     SimpleDouble();
-    double GetDouble();
-    void SetDouble();
+    double GetDouble() const;
+    void SetDouble(double);
 private:
     double internalDouble;
 };
+
+#endif

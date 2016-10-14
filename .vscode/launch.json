@@ -1,0 +1,27 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "preLaunchTask": "make Addition_test.exe",
+            "name": "Addition Tests",
+            "miDebuggerPath": "C:/MinGW/bin/gdb.exe",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceRoot}/Addition_test.exe",
+            "args": [],
+            "stopAtEntry": false,
+            "cwd": "${workspaceRoot}",
+            "environment": [],
+            "externalConsole": false,
+            "linux": {
+                "MIMode": "gdb"
+            },
+            "osx": {
+                "MIMode": "lldb"
+            },
+            "windows": {
+                "MIMode": "gdb"
+            }
+        }
+    ]
+}

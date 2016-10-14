@@ -1,3 +1,6 @@
+#ifndef FUNCTIONEVALUATOR_H
+#define FUNCTIONEVALUATOR_H
+
 /*
  * Interface
  * A class that holds a function
@@ -5,14 +8,22 @@
  * By Danny Reilman <reilman@umich.edu>
  */
 #include <vector>
+#include <memory>
+#include "Function.h"
 #include "EvaluateToDouble.h"
+
+//Forward declaration
+class Function;
 
 class FunctionEvaluator : public EvaluateToDouble
 {
 public:
-    FunctionEvaluator(const vector<EvaluateToDouble*>, const Function*);
-    double EvaluateToDouble() const;
+    FunctionEvaluator(std::unique_ptr<std::vector<std::unique_ptr<EvaluateToDouble>>>, std::unique_ptr<Function>);
+    ~FunctionEvaluator();
+    virtual double GetDouble() const;
 private:
-    vector<EvaluateToDouble*> args;
-    const Function* func;
+    std::unique_ptr<std::vector<std::unique_ptr<EvaluateToDouble>>> args;
+    std::unique_ptr<Function> func;
 };
+
+#endif

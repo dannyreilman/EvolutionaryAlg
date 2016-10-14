@@ -1,12 +1,31 @@
+#ifndef FUNCTION_H
+#define FUNCTION_H
+
 /*
- * General function form, for defining valid moves
+ * General function form, for defining valid functions
  * By Danny Reilman <reilman@umich.edu>
  */
 #include <vector>
+#include <memory>
+
 #include "EvaluateToDouble.h"
+#include "FunctionEvaluator.h"
+
+//Forward declaration
+class FunctionEvaluator;
 
 class Function {
 public:
+	/*
+	 * Constructor
+	 */
+	Function();
+
+	/*
+	 * Destructor
+	 */
+	virtual ~Function();
+
 	/*
 	 * Returns the number of arguments that should be sent into evaluate
 	 */
@@ -14,13 +33,14 @@ public:
 
 	/*
 	 * Requires: arguments.length == getNumArgs();
-	 *  Returns the function evaluated over the arguments.
+	 * Returns the function evaluated over the arguments.
 	 */
-	virtual int Eval(const vector<EvaluateToDouble*>) const = 0;
+	virtual double Eval(const std::vector<EvaluateToDouble*>&) const = 0;
+	double Eval(const std::vector<std::unique_ptr<EvaluateToDouble>>&) const;
 
-	
 	/*
-	 * Determines if a function has an identity
-	 */
-	 bool HasIdentity() const;
+	 *
+	
 };
+
+#endif
