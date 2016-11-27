@@ -8,15 +8,20 @@
  */
 #include "EvaluateToDouble.h"
 
-class SimpleDouble : public EvaluateToDouble
+namespace MutableFuncs
 {
-public: 
-    SimpleDouble(double);
-    SimpleDouble();
-    double GetDouble() const;
-    void SetDouble(double);
-private:
-    double internalDouble;
-};
+    class SimpleDouble : public EvaluateToDouble
+    {
+    public: 
+        SimpleDouble(double);
+        SimpleDouble();
+        virtual ~SimpleDouble();
+
+        double GetDouble() const;
+        void SetDouble(double);
+    private:
+        double internalDouble;
+    };
+}
 
 #endif

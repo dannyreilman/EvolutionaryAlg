@@ -1,10 +1,13 @@
 #include "Function.h"
 #include "SimpleDouble.h"
-#include <iostream>
-#include <cassert>
-#include <memory>
-using namespace std;
 
+#include <iostream>
+#include <memory>
+
+using std::vector;
+using std::unique_ptr;
+
+using namespace MutableFuncs;
 /*
  * Default constructor does nothing
  */

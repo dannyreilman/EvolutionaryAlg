@@ -10,8 +10,8 @@
 #include "SimpleDouble.h"
 #include "FunctionWithIdentity.h"
 
-using namespace std;
-
+using namespace MutableFuncs;
+using std::unique_ptr;
 /*
  * Default constructor does nothing
  */
@@ -34,28 +34,42 @@ int Addition::GetNumArgs() const
 /*
  * REQUIRES: args.size == NUM_SUPPORTED_ARGS
  * RETURNS: Let args be [a, b], then Eval returns a + b
+ * THROWS:  StringException if args is not the correct number of args
  */
-double Addition::Eval(const std::vector<EvaluateToDouble *>& args) const
+double Addition::Eval(const std::vector<EvaluateToDouble*>& args) const
 {
-    assert(args.size() == NUM_SUPPORTED_ARGS);
-
-    return args.at(0)->GetDouble() + args.at(1)->GetDouble();
+    if(args.size() == NUM_SUPPORTED_ARGS)
+    {
+        return args.at(0)->GetDouble() + args.at(1)->GetDouble();
+    }
+    else
+    {
+        throw StringException("Addition.Eval", "Incorrect number of arguments given, correct NumArgs is :" + std::to_string(NUM_SUPORTED_ARGS));
+    }
 }
 
 /*
- * Requires: HasIdentity()
  * Returns: A pointer to a FunctionEvaluator that evaluates 
  * 		 to the passed in EvaluateToDouble.
  */
-unique_ptr<FunctionEvaluator> Addition::CreateIdentity(unique_ptr<EvaluateToDouble> arg_in) const
+static unique_ptr<FunctionEvaluator> Addition::CreateIdentity(unique_ptr<EvaluateToDouble> arg_in) 
+{
+    unique_ptr<SimpleDouble> idArg(new SimpleDouble(0));
+
+    return CreateEvaluator(move(arg_in),move(idArg));
+}
+
+/*
+ *  Static function to generate an evaluator with given args
+ */
+static unique_ptr<MutableFuncs::FunctionEvaluator> CreateEvaluator(unique_ptr<MutableFuncs::EvaluateToDouble> arg1, unique_ptr<MutableFuncs::EvaluateToDouble> arg2)
 {
     unique_ptr<Function> instance(new Addition);
+    unique_ptr<vector<unique_ptr<EvaulateToDouble> > > args(new vector<unique_ptr<EvaluateToDouble>>());
 
-    unique_ptr<vector<unique_ptr<EvaluateToDouble>>> args(new vector<unique_ptr<EvaluateToDouble>>());
-    
-    args->push_back(move(arg_in));
-    args->push_back(unique_ptr<EvaluateToDouble>(new SimpleDouble(0)));
-    
-    unique_ptr<FunctionEvaluator> identity(new FunctionEvaluator(move(args), move(instance)));
-    return identity;
+    args->push_back(move(arg1));
+    args->push_back(move(arg2));
+
+    unique_ptr<FunctionEvaluator> evaluator(new FunctionEvaluator(move(args), move(instance)));
+    return evaluator;
 }

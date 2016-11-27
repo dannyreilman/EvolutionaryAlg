@@ -4,7 +4,7 @@
     "version": "0.1.0",
     "command": "make",
     "isShellCommand": true,
-    "args": [],
+    "args": ["-B"],
     "showOutput": "always",
     "suppressTaskName": true,
     "tasks": [

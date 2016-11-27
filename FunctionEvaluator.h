@@ -12,18 +12,21 @@
 #include "Function.h"
 #include "EvaluateToDouble.h"
 
-//Forward declaration
-class Function;
-
-class FunctionEvaluator : public EvaluateToDouble
+namespace MutableFuncs
 {
-public:
-    FunctionEvaluator(std::unique_ptr<std::vector<std::unique_ptr<EvaluateToDouble>>>, std::unique_ptr<Function>);
-    ~FunctionEvaluator();
-    virtual double GetDouble() const;
-private:
-    std::unique_ptr<std::vector<std::unique_ptr<EvaluateToDouble>>> args;
-    std::unique_ptr<Function> func;
-};
+    //Forward declaration
+    class Function;
+
+    class FunctionEvaluator : public EvaluateToDouble
+    {
+    public:
+        FunctionEvaluator(std::unique_ptr < std::vector < std::unique_ptr < EvaluateToDouble > > >, std::unique_ptr < Function > );
+        virtual ~FunctionEvaluator();
+        virtual double GetDouble() const;
+    private:
+        std::unique_ptr< std::vector < std::unique_ptr < EvaluateToDouble > > > args;
+        std::unique_ptr< Function > func;
+    };
+}
 
 #endif

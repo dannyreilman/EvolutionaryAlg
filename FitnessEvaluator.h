@@ -8,5 +8,5 @@
 class FitnessEvaluator
 {
 public:
-	virtual double Evaluate(Subject*) = 0;
+	virtual double Evaluate(const Subject* const) = 0;
 };

@@ -10,6 +10,7 @@
 #include <utility>
 #include "FunctionEvaluator.h"
 
+using namespace MutableFuncs;
 using namespace std;
 /*
  * Constructor to assign internal function and argument values

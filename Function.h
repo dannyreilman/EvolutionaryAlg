@@ -11,36 +11,37 @@
 #include "EvaluateToDouble.h"
 #include "FunctionEvaluator.h"
 
-//Forward declaration
-class FunctionEvaluator;
+using std::vector;
+using std::unique_ptr;
 
-class Function {
-public:
-	/*
-	 * Constructor
-	 */
-	Function();
+namespace MutableFuncs
+{
+	class FunctionEvaluator;
 
-	/*
-	 * Destructor
-	 */
-	virtual ~Function();
+	class Function {
+	public:
+		/*
+		* Constructor
+		*/
+		Function();
 
-	/*
-	 * Returns the number of arguments that should be sent into evaluate
-	 */
-	virtual int GetNumArgs() const = 0;
+		/*
+		* Destructor
+		*/
+		virtual ~Function();
 
-	/*
-	 * Requires: arguments.length == getNumArgs();
-	 * Returns the function evaluated over the arguments.
-	 */
-	virtual double Eval(const std::vector<EvaluateToDouble*>&) const = 0;
-	double Eval(const std::vector<std::unique_ptr<EvaluateToDouble>>&) const;
+		/*
+		* Returns the number of arguments that should be sent into evaluate
+		*/
+		virtual int GetNumArgs() const = 0;
 
-	/*
-	 *
-	
-};
+		/*
+		* Requires: arguments.length == getNumArgs();
+		* Returns the function evaluated over the arguments.
+		*/
+		virtual double Eval(const vector<MutableFuncs::EvaluateToDouble*>&) const = 0;
+		double Eval(const vector< unique_ptr<MutableFuncs::EvaluateToDouble> >& vec) const;
+	};
+}
 
 #endif
