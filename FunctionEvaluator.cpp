@@ -31,3 +31,8 @@ double FunctionEvaluator::GetDouble() const
 {
     return func->Eval(*args);
 }
+
+string FunctionEvaluator::Print() const
+{
+    return func->PrintFunction(*args);
+}

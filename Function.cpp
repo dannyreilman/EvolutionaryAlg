@@ -1,8 +1,10 @@
 #include "Function.h"
 #include "SimpleDouble.h"
+
 #include <iostream>
 #include <cassert>
 #include <memory>
+#include <string>
 using namespace std;
 
 /*
@@ -28,4 +30,16 @@ double Function::Eval(const vector<unique_ptr<EvaluateToDouble>>& vec) const
 	}
 	
 	return Eval(rawPtrVec);
+}
+
+string Function::PrintFunction(const vector<unique_ptr<EvaluateToDouble>>& vec) const
+{
+	vector<EvaluateToDouble*> rawPtrVec;
+
+	for (int i =0; i < GetNumArgs(); i++)
+	{
+		rawPtrVec.push_back(vec.at(i).get());
+	}
+	
+	return PrintFunction(rawPtrVec);
 }

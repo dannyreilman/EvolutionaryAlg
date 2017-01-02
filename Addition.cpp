@@ -5,6 +5,7 @@
  */
 #include <cassert>
 #include <new>
+#include <string>
 
 #include "Addition.h"
 #include "SimpleDouble.h"
@@ -59,3 +60,26 @@ unique_ptr<FunctionEvaluator> Addition::CreateIdentity(unique_ptr<EvaluateToDoub
     unique_ptr<FunctionEvaluator> identity(new FunctionEvaluator(move(args), move(instance)));
     return identity;
 }
+
+string Addition::PrintFunction(const std::vector<EvaluateToDouble*>& args) const
+{
+    const string symbol = " + ";
+    string returnString;
+
+    returnString += "(";
+
+    for(int i = 0; i < NUM_SUPPORTED_ARGS; ++i)
+    {
+        returnString += args.at(i)->Print();
+
+        if(i < NUM_SUPPORTED_ARGS - 1)
+        {
+            returnString += symbol;
+        }
+    }
+
+    returnString += ")";
+
+    return returnString;
+}
+

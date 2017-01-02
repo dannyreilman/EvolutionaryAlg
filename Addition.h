@@ -31,6 +31,7 @@ public:
      */
     virtual std::unique_ptr<FunctionEvaluator> CreateIdentity(std::unique_ptr<EvaluateToDouble>) const;
 
+    virtual std::string PrintFunction(const std::vector<EvaluateToDouble*>&) const;
 private:
     const static int NUM_SUPPORTED_ARGS = 2;
 };

@@ -9,6 +9,8 @@
  */
 #include <vector>
 #include <memory>
+#include <string>
+
 #include "Function.h"
 #include "EvaluateToDouble.h"
 
@@ -21,6 +23,7 @@ public:
     FunctionEvaluator(std::unique_ptr<std::vector<std::unique_ptr<EvaluateToDouble>>>, std::unique_ptr<Function>);
     ~FunctionEvaluator();
     virtual double GetDouble() const;
+    virtual std::string Print() const;
 private:
     std::unique_ptr<std::vector<std::unique_ptr<EvaluateToDouble>>> args;
     std::unique_ptr<Function> func;

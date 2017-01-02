@@ -19,13 +19,15 @@ using namespace std;
 
 void addition_test_simple();
 void addition_test_function_evaluator();
+void function_evaluator_composition();
 
 int main() {
     try
     {
         addition_test_simple();
         addition_test_function_evaluator();
-        cout << "All tests passed" << endl; 
+        function_evaluator_composition();
+        cout << "All tests passed" << endl;
     }
     catch(const char* s)
     {
@@ -76,8 +78,18 @@ void addition_test_function_evaluator()
     
     if(evaluator.GetDouble() != 5)
     {
-        throw "addition_test_function_evaluator";
+        throw "addition_test_function_evaluator_GetDouble";
+    }
+
+    string printedResult = evaluator.Print();
+    string expectedResult = "(0 + 5)";
+
+    if(printedResult.compare(expectedResult) != 0)
+    {
+        cout << "Printed: " << printedResult << endl;
+        throw "addition_test_function_evaluator_Print";
     }
 
     cout << "addition_test_function_evaluator passed!" << endl;
 }
+
