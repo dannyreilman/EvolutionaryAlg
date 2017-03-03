@@ -1,13 +1,14 @@
 #include "EvaluateToDouble.h"
+#include <sstream>
 
-using namespace std;
+using namespace MutableFuncs;
 
 /*
  * Defaults to printing a string representation of the double
  */
-string EvaluateToDouble::Print() const
+std::string EvaluateToDouble::Print() const
 {
-	ostringstream out;
+	std::ostringstream out;
 	out << GetDouble();
 	return out.str();
 }

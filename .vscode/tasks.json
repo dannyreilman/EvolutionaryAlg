@@ -11,6 +11,10 @@
         {
             "taskName" : "make Addition_test.exe",
             "args": ["Addition_test.exe"]
+        },
+        {
+            "taskName" : "make MutableFuncDriver.exe",
+            "args" : ["MutableFuncDriver.exe"]
         }
     ]
 }

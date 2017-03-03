@@ -22,6 +22,28 @@
             "windows": {
                 "MIMode": "gdb"
             }
+        },
+        {
+            "preLaunchTask": "make MutableFuncDriver.exe",
+            "name": "MutableFunc driver",
+            "miDebuggerPath": "C:/MinGW/bin/gdb.exe",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceRoot}/MutableFuncDriver.exe",
+            "args": [],
+            "stopAtEntry": false,
+            "cwd": "${workspaceRoot}",
+            "environment": [],
+            "externalConsole": true,
+            "linux": {
+                "MIMode": "gdb"
+            },
+            "osx": {
+                "MIMode": "lldb"
+            },
+            "windows": {
+                "MIMode": "gdb"
+            }
         }
     ]
 }

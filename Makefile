@@ -1,20 +1,22 @@
 #Makefile 
-#Allows concise building of various EvoAlg tests
+#Allows concise building of EvoAlg 
+MutableFuncDriverName = FunctionBuilder
+
+include MutableFunctions/Makefile
 
 #Compiler
 CXX = g++
+
+MutableFunctionsFlag = -I../EvoAlg/MutableFunctions
 
 #Flag to include breakpoints
 debug_or_optimize = -g
 
 #Other useful flags 
-CXXFLAGS = -Wall -Werror -pedantic --std=c++11 $(debug_or_optimize)
+CXXFLAGS = -Wall -Werror --std=c++11 -pedantic $(debug_or_optimize) 
 
-EvaluateToDoubleCore = EvaluateToDouble.cpp SimpleDouble.cpp 
+Driver: MutableFuncDriver.cpp $(FunctionEvaluatorCore) $(AlgebraFunctions)
+	$(CXX) $(MutableFunctionsFlag) $(CXXFLAGS) $^ -o $(MutableFuncDriverName)
 
-FunctionCore = Function.cpp Addition.cpp FunctionWithIdentity.cpp $(EvaluateToDoubleCore)
-
-FunctionEvaluatorCore = FunctionEvaluator.cpp $(FunctionCore)
-
-Addition_test.exe: Addition_test.cpp $(FunctionEvaluatorCore)
-	$(CXX) $(CXXFLAGS) $^ -o $@
+clean: 
+	del *.exe /s
