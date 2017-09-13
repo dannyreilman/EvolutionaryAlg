@@ -1,0 +1,9 @@
+//Default mutation rates
+NumberDrift 0.01
+AdditionIdentityProduction 5
+SubtractionIdentityProduction 5
+MultiplicationIdentityProduction 5
+DivisionIdentityProduction 5
+InputIdentityChance 25
+IdentityReduction 5
+IdentityReductionWidth 0.1

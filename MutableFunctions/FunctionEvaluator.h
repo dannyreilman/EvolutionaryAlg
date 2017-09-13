@@ -11,7 +11,6 @@
 #include <memory>
 #include <string>
 
-#include "Function.h"
 #include "EvaluateToDouble.h"
 #include "FunctionEnum.h"
 
@@ -22,18 +21,30 @@ namespace MutableFuncs
 
     class FunctionEvaluator : public EvaluateToDouble
     {
-    public:
+    public:        
         template<typename ArgIter>
-        FunctionEvaluator(ArgIter argsStart, ArgIter argsEnd, FunctionEnum func);
+        FunctionEvaluator(ArgIter argsStart, ArgIter argsEnd, FunctionEnum func_in);
 
         virtual ~FunctionEvaluator();
-        virtual double GetDouble() const;
+        
+        virtual double GetDouble(const std::unordered_map<char, double>& variables) const;
+
+        FunctionEnum GetFunctionEnum() const;
+        
         virtual std::string Print() const;
 
         virtual std::unique_ptr<EvaluateToDouble> Clone() const;
+        virtual void Mutate(MutationOptions& opt);
+
+        virtual void ExportBatch(std::ostream& out) const;        
+
+        virtual std::unique_ptr<EvaluateToDouble> Reduce(double width);        
+        
+        virtual void CollectVariables(std::unordered_set<char>& variables) const;	  
+        virtual int GetHeight() const;        
     private:
         std::vector < std::unique_ptr < EvaluateToDouble > > args;
-        std::unique_ptr<Function> func;
+        FunctionEnum func;
     };
 }
 

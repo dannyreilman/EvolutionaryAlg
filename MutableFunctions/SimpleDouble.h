@@ -18,10 +18,16 @@ namespace MutableFuncs
         SimpleDouble();
         virtual ~SimpleDouble();
 
-        double GetDouble() const;
+        double GetDouble(const std::unordered_map<char, double>& variables) const;
         void SetDouble(double);
 
         virtual std::unique_ptr<EvaluateToDouble> Clone() const;
+
+        virtual void Mutate(MutationOptions& opt);
+
+        virtual void ExportBatch(std::ostream& out) const;        
+
+        virtual bool IsNumber() const;        
     private:
         double internalDouble;
     };

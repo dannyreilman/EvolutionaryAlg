@@ -14,7 +14,7 @@
         },
         {
             "taskName" : "make MutableFuncDriver.exe",
-            "args" : ["MutableFuncDriver.exe"]
+            "args" : ["driver"]
         }
     ]
 }

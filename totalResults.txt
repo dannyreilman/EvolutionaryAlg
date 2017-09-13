@@ -1,0 +1,25 @@
+move gen add gen input x gen mult gen sub 2.01357 0.0132359 gen input y total16
+move gen add gen input x gen add gen mult 1.97547 gen input y -0.00379922 total15
+move gen add gen input x gen mult 2.00204 gen input y total14
+move gen add gen add gen input x gen sub gen mult 2.00926 gen div gen input y 1.00126 gen div gen input x 0.994304 gen div 0.00882249 gen input x total12
+move gen mult 2.00405 gen sub gen input y 0.0141863 total17
+move gen add gen input x gen mult gen mult 1.97905 gen input y 1.0031 total10
+move gen add gen input x gen mult 1.96795 gen input y total02
+move gen add gen input x gen add gen mult gen mult 1.99924 gen add gen mult gen input y 1.00389 gen input x gen mult gen input y gen div gen input x 1.00455 0.0291628 total09
+move gen add gen input x gen mult gen add 1.99887 0.00326633 gen input y total24
+move gen add gen input x gen mult gen div 1.97441 gen input y gen input y total06
+move gen add gen div gen input x gen input y gen mult 2.01078 gen sub gen div gen sub gen input y gen add 0.0117196 gen input y 1.00136 gen input y total03
+move gen add gen input x 2.01486 total18
+move gen add gen input x gen mult 2.00661 gen input y total19
+move gen add gen sub gen input x gen sub gen mult 0.00163712 gen sub 1.00299 gen input x gen input y gen mult gen mult 2.0001 gen input y 0.994532 total20
+move gen add gen add gen sub gen input x gen input y gen mult 2.00135 gen input y 0.0046065 total22
+move gen add gen input x gen div gen mult 1.9946 gen input y 0.99371 total21
+move gen sub gen div gen add gen input x gen mult gen mult 2.0034 gen add 1.02109 gen input x gen div gen input y 0.997126 gen input x -0.0105935 total05
+move gen add gen input x gen sub gen mult gen mult 2.01455 gen input y 1.00925 0.0151561 total13
+move gen add gen input x gen mult gen mult 2.01009 1.00439 gen input y total25
+move gen mult gen add 1.99872 0.0177643 gen input y total23
+move gen div gen add gen input x gen mult 2.0047 gen input y gen input x total04
+move gen div gen mult 2.00668 gen input y 1.00149 total07
+move gen add gen input x 2.01537 total11
+move gen add gen sub gen input x -0.0171463 gen sub gen mult 1.9826 gen input y -0.0158694 total08
+move gen add gen input x gen mult 1.99272 gen input y total01

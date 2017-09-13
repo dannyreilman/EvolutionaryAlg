@@ -1,0 +1,25 @@
+move gen add gen input x gen mult 2 gen input y total01
+save total01 total02
+save total01 total03
+save total01 total04
+save total01 total05
+save total01 total06
+save total01 total07
+save total01 total08
+save total01 total09
+save total01 total10
+save total01 total11
+save total01 total12
+save total01 total13
+save total01 total14
+save total01 total15
+save total01 total16
+save total01 total17
+save total01 total18
+save total01 total19
+save total01 total20
+save total01 total21
+save total01 total22
+save total01 total23
+save total01 total24
+save total01 total25

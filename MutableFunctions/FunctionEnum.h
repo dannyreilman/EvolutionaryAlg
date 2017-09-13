@@ -4,7 +4,10 @@
 //Simple enum to pass around function information
 enum class FunctionEnum
 {
-	Addition
+	Addition,
+	Subtraction,
+	Multiplication,
+	Division
 };
 
 #endif
