@@ -6,7 +6,14 @@
 
 #include <cmath>
 
-static double BREVITY_WEIGHT = 0.1;
+static double BREVITY_WEIGHT = 0.5;
+
+//Loss function used
+static double Loss(double incorrect, double correct)
+{
+	//Square loss
+	return std::pow(incorrect - correct, 2) / 2.0;
+}
 
 MutableFunctionSubject::MutableFunctionSubject(): options(nullptr), generator(nullptr), mutableFuncObject(nullptr) {}
 
@@ -34,7 +41,9 @@ double MutableFunctionSubject::Evaluate()
 	const std::unordered_map<char, double>* variables = generator->GetValue().first;
 	double correctResult = generator->GetValue().second;
 	double result = mutableFuncObject->GetDouble(*variables);
-	return 1.0 / (abs(correctResult - result) * BREVITY_WEIGHT * mutableFuncObject->GetHeight());
+
+	//This brevity weight term acts as a normalizing factor to prevent overfitting and large expressions
+	return Loss(result, correctResult) + BREVITY_WEIGHT * mutableFuncObject->GetHeight();
 }
 
 void MutableFunctionSubject::Print(std::ostream& out) const

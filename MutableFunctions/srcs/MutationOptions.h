@@ -23,6 +23,8 @@ namespace MutableFuncs
 
         double IdentityReductionChance;
         double IdentityReductionWidth;
+
+        double IterationChange;
     };
 }    
 #endif

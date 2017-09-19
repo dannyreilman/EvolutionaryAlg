@@ -17,23 +17,36 @@
 #include <iostream>
 #include <fstream>
 #include <utility>
+#include <time.h>      
+#include <stdlib.h>   
 
 using namespace std;
 
-static int SUBJECT_COUNT = 10;
 using mutableFuncObj = unique_ptr<MutableFuncs::EvaluateToDouble>;
+
+static double EPSILON = 0.0000001;
 
 int main()
 {
-    vector<unique_ptr<EvoAlg::Subject> > subjects;
-    vector< mutableFuncObj > args;
+	srand(time(NULL));
+	vector<unique_ptr<EvoAlg::Subject> > subjects;
 
-    args.push_back(mutableFuncObj(new MutableFuncs::VariableDouble('x')));
-    args.push_back(mutableFuncObj(new MutableFuncs::SimpleDouble(10)));
+	vector< mutableFuncObj > mainArgs;
+
+	vector< mutableFuncObj > xArgs;
+    xArgs.push_back(mutableFuncObj(new MutableFuncs::VariableDouble('x')));
+	xArgs.push_back(mutableFuncObj(new MutableFuncs::SimpleDouble(2)));
+	mainArgs.push_back(mutableFuncObj(new MutableFuncs::FunctionEvaluator(xArgs.begin(), xArgs.end(), MutableFuncs::FunctionEnum::Multiplication)));
+	
+	vector< mutableFuncObj > yArgs;
+    yArgs.push_back(mutableFuncObj(new MutableFuncs::VariableDouble('y')));
+	yArgs.push_back(mutableFuncObj(new MutableFuncs::SimpleDouble(5)));
+	mainArgs.push_back(mutableFuncObj(new MutableFuncs::FunctionEvaluator(yArgs.begin(), yArgs.end(), MutableFuncs::FunctionEnum::Multiplication)));
+
 
     mutableFuncObj toTestObject(
-            new MutableFuncs::FunctionEvaluator(args.begin(),
-                                    args.end(),
+            new MutableFuncs::FunctionEvaluator(mainArgs.begin(),
+                                    mainArgs.end(),
                                     MutableFuncs::FunctionEnum::Addition));
 
     FunctionSupply toTest(std::move(toTestObject), -1000, 1000);
@@ -73,39 +86,93 @@ int main()
     valueReader.ignore(250, ' ');
     valueReader >> opt.IdentityReductionWidth;
 
+	valueReader.ignore(250, ' ');
+	valueReader >> opt.IterationChange;
+	
     valueReader.close();
-    
-    for(int i = 0; i < SUBJECT_COUNT; ++i)
+	
+	int subjectCount;
+	cout << "How many subjects?" << endl;
+	cin >> subjectCount;
+
+    for(int i = 0; i < subjectCount; ++i)
     {
         unique_ptr<EvoAlg::Subject> temp(new MutableFunctionSubject(&opt, &toTest));
         subjects.push_back(std::move(temp));
     }
 
-    for(int i = 0; i < 5; ++i)
-    {
-        //Do generation
-        
-        //Sort by fitness
-        std::sort(subjects.begin(), subjects.end(), EvoAlg::Subject::SubjectComparator);
-        
-        //Kill bad ones and replace with good ones
-        for(unsigned int i = 0; i < subject.size()/4; ++i)
-        {
-            subjects[subjects.size() - 1 - i].reset(subjects[i].Clone());
-        }
-        
-        //Mutations
-        for(unsigned int i = 0; i < subjects.size(); ++i)
-        {
-            MutableFuncs::EvaluateToDouble::MutatePointer(subjects[i]);
-        }
-    }
-    std::sort(subjects.begin(), subjects.end(), EvoAlg::Subject::SubjectComparator());    
-    
-    cout << "Result" << endl;
-    for(int i = 0; i < subjects.size(); ++i)
-    {
-        subjects[i]->Print(cout);
-        cout << endl;
-    }
+	bool running = true;
+	int iters;
+	while(running)
+	{
+		cout << "Move forward how many iterations? (0 to run until completion)" << endl;
+		cin >> iters;
+		
+		bool stopOnSlowdown = false;
+		if(iters == 0)
+		{
+			stopOnSlowdown = true;
+			iters = 10000;
+		}
+		
+		if(iters >= 0)
+		{
+			//This returns infinity
+			double secondLastError = 1.0/0.0;
+			double lastError = 1000000000000000.0;
+
+			//Second term checks every ten iters if the last error was small enough to end iterations
+			for(int i = 0; i < iters || (i % 10 == 0 && (stopOnSlowdown && abs(secondLastError - lastError) < EPSILON)); ++i)
+			{
+				//Do generation
+				
+				//Sort by error, lower is better
+				std::sort(subjects.begin(), subjects.end(), EvoAlg::Subject::SubjectComparator());
+				
+				//Kill bad ones and replace with good ones
+				for(unsigned int i = 0; i < subjects.size()/4; ++i)
+				{
+					subjects[subjects.size() - 1 - i].reset(nullptr);
+					subjects[subjects.size() - 1 - i] = std::move(subjects[i]->Clone());
+				}
+				
+				//Mutations
+				for(unsigned int i = 0; i < subjects.size(); ++i)
+				{
+					subjects[i]->Mutate();
+				}
+
+				toTest.NextGeneration(i);
+				opt.simpleDoubleShift /= opt.IterationChange;
+				opt.AdditionIdentityChance /= opt.IterationChange;
+				opt.SubtractionIdentityChance /= opt.IterationChange;
+				opt.MultiplicationIdentityChance /= opt.IterationChange;
+				opt.DivisionIdentityChance /= opt.IterationChange;
+				opt.InputIdentityChance /= opt.IterationChange;
+				
+				//IdentityReduction is not reduced over time so eventually large expressions will drift back together
+				//opt.IdentityReductionChance /= opt.IterationChange;
+
+				secondLastError = lastError;
+				lastError = subjects[0]->Evaluate();
+				
+			}
+			std::sort(subjects.begin(), subjects.end(), EvoAlg::Subject::SubjectComparator());    
+			
+			for(auto it = toTest.GetValue().first->begin(); it != toTest.GetValue().first->end(); ++it)
+			{
+				cout << it->first << " = " << it->second << endl;
+			}
+			cout << "Result = " << toTest.GetValue().second << endl;
+			for(unsigned int i = 0; i < subjects.size(); ++i)
+			{
+				subjects[i]->Print(cout);
+				cout << " " << subjects[i]->Evaluate() << endl;
+			}
+		}
+		else
+		{
+			running = false;
+		}
+	}
 }
