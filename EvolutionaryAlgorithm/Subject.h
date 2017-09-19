@@ -8,22 +8,35 @@
  */
 
 #include <memory>
+#include <iostream>
 
 namespace EvoAlg
 {
 class Subject
 {
 public:
+    class SubjectComparator
+    {
+    public:
+        bool operator()(std::unique_ptr<Subject>& a, std::unique_ptr<Subject>& b)
+        {
+            return a->Evaluate() < b->Evaluate();
+        }
+    };
+
 	virtual ~Subject() {}
 
 	//Should be implemented to incrementally change the subject
 	virtual void Mutate() = 0;
 
 	//Returns a double to describe the fitness of this subject
-	virtual double Evaluate() = 0;
+    virtual double Evaluate() = 0;
+    
+    virtual void Print(std::ostream& out) const = 0;
 
 	//Deep copy of this subject
-	virtual std::unique_ptr<Subject> Clone() = 0;
+    virtual std::unique_ptr<Subject> Clone() = 0;
+    
 };
 }
 

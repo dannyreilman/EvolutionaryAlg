@@ -16,20 +16,25 @@
 class MutableFunctionSubject : public EvoAlg::Subject
 {
 public:
-	MutableFunctionSubject(MutationOptions* options_in, ValueSupplier* generator_in);
+    MutableFunctionSubject();
+    MutableFunctionSubject(MutableFunctionSubject&& other);    
+    MutableFunctionSubject(MutableFuncs::MutationOptions* options_in, ValueSupplier* generator_in);
+    
 	virtual ~MutableFunctionSubject() {}
 
 	virtual void Mutate();
 	
-	virtual double Evaluate();
+    virtual double Evaluate();
+    
+    virtual void Print(std::ostream& out) const;    
 
 	virtual std::unique_ptr<Subject> Clone();
 
 private:
-	MutationOptions* options;
+	MutableFuncs::MutationOptions* options;
 	ValueSupplier* generator;
 
-	std::unique_ptr<MutableFuncs::EvaluateToDouble> MutableFuncObject;
+	std::unique_ptr<MutableFuncs::EvaluateToDouble> mutableFuncObject;
 };
 
 #endif
