@@ -24,10 +24,6 @@ namespace MutableFuncs
     class EvaluateToDouble
     {
     public:
-        static void MutatePointer(std::unique_ptr<EvaluateToDouble>& pointer, MutationOptions& opt);
-        static void ExportPointer(std::unique_ptr<EvaluateToDouble>& pointer, 
-                                                    const std::string& name, std::ostream& out);
-
         virtual ~EvaluateToDouble() {}
 
         virtual double GetDouble() const;
@@ -39,7 +35,7 @@ namespace MutableFuncs
         virtual std::unique_ptr<EvaluateToDouble> Clone() const = 0;
 
         //Individual mutation, identity spawning is handled elsewhere
-        virtual void Mutate(MutationOptions& opt) = 0;
+        virtual void Mutate(MutationOptions& opt, int size) = 0;
 
         //Generates a batch command to create this object again
         virtual void ExportBatch(std::ostream& out) const = 0;
@@ -48,8 +44,24 @@ namespace MutableFuncs
         virtual bool IsInput() const;
         virtual std::unique_ptr<EvaluateToDouble> Reduce(double width) const;
 
+        //puts all used variables in "variables"
         virtual void CollectVariables(std::unordered_set<char>& variables) const;
+
+        //Returns the height of this evaluateToDouble when represented as a tree
         virtual int GetHeight() const;
+        //Returns the node count of this evaluateToDouble when represented as a tree
+        virtual int GetSize() const;
+
+        static void MutatePointer(std::unique_ptr<EvaluateToDouble>& pointer, MutationOptions& opt, int size);
+        
+        static void MutatePointer(std::unique_ptr<EvaluateToDouble>& pointer, MutationOptions& opt)
+        {
+            MutatePointer(pointer, opt, pointer->GetSize());
+        }
+
+        static void ExportPointer(std::unique_ptr<EvaluateToDouble>& pointer, 
+                                                    const std::string& name, std::ostream& out);
+
     };
 }
 

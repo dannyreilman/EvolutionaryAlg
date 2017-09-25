@@ -35,7 +35,7 @@ unique_ptr<EvaluateToDouble> SimpleDouble::Clone() const
     return toReturn;
 }
 
-void SimpleDouble::Mutate(MutationOptions& opt)
+void SimpleDouble::Mutate(MutationOptions& opt, int size)
 {
     std::normal_distribution<double> dist(internalDouble, opt.simpleDoubleShift);
     internalDouble = dist(opt.generator);

@@ -78,11 +78,11 @@ unique_ptr<EvaluateToDouble> FunctionEvaluator::Clone() const
      return newTop;
 }
 
-void FunctionEvaluator::Mutate(MutationOptions& opt)
+void FunctionEvaluator::Mutate(MutationOptions& opt, int size)
 {
     for(unsigned int i = 0; i < args.size(); ++i)
     {
-        EvaluateToDouble::MutatePointer(args[i], opt);
+        EvaluateToDouble::MutatePointer(args[i], opt, size);
     }
 }
 
@@ -140,4 +140,14 @@ int FunctionEvaluator::GetHeight() const
         }
     }
     return max + 1;
+}
+
+int FunctionEvaluator::GetSize() const
+{
+    int sum = 0;
+    for(auto it = args.cbegin(); it != args.cend(); ++it)
+    {
+        sum += (*it)->GetSize();
+    }
+    return sum + 1;
 }

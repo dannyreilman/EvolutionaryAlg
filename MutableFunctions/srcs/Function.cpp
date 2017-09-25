@@ -180,10 +180,13 @@ namespace MutableFuncs
 
 
 	//Sometimes causes identities to form, not changing the overall value, unless an input variable is inserted
-	std::unique_ptr<EvaluateToDouble> Function::PossibleIdentity(std::unique_ptr<EvaluateToDouble>& arg, const MutationOptions& opt)
+	std::unique_ptr<EvaluateToDouble> Function::PossibleIdentity(std::unique_ptr<EvaluateToDouble>& arg, const MutationOptions& opt, int size)
 	{
-		double sum = 0;
-		int num = rand() % 100;
+        double sum = 0;
+
+        //multiplying by size reduces the odds of mutation by size. This keeps the expected number of mutations constant
+        //with regard to size
+		int num = size * (rand() % 100);
 		int num2 = rand() % 100;
 
 		double dubNum = (double)num;

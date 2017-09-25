@@ -26,7 +26,7 @@ public:
 	
 	virtual std::unique_ptr<EvaluateToDouble> Clone() const;
 	
-	virtual void Mutate(MutationOptions& opt);
+	virtual void Mutate(MutationOptions& opt, int size);
 
 	virtual void ExportBatch(std::ostream& out) const;        	
 

@@ -35,7 +35,7 @@ std::unique_ptr<EvaluateToDouble> VariableDouble::Clone() const
 	return std::unique_ptr<EvaluateToDouble>(new VariableDouble(variableName));
 }
 
-void VariableDouble::Mutate(MutationOptions& opt)
+void VariableDouble::Mutate(MutationOptions& opt, int size)
 {
 	//Do nothing because variables cannot mutate
 	return;

@@ -7,4 +7,4 @@ DivisionIdentityProduction 4
 InputIdentityChance 25
 IdentityReduction 50
 IdentityReductionWidth 5
-IterationChange 1.1
+IterationChange 1.001

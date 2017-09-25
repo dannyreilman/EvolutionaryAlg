@@ -12,7 +12,7 @@ static double BREVITY_WEIGHT = 0.5;
 static double Loss(double incorrect, double correct)
 {
 	//Square loss
-	return std::pow(incorrect - correct, 2) / 2.0;
+	return std::pow(incorrect - correct, 2.0) / 2.0;
 }
 
 MutableFunctionSubject::MutableFunctionSubject(): options(nullptr), generator(nullptr), mutableFuncObject(nullptr) {}
@@ -33,7 +33,8 @@ MutableFunctionSubject::MutableFunctionSubject(MutableFuncs::MutationOptions *op
 
 void MutableFunctionSubject::Mutate()
 {
-	MutableFuncs::EvaluateToDouble::MutatePointer(mutableFuncObject, *options);
+    int size = mutableFuncObject->GetSize();
+	MutableFuncs::EvaluateToDouble::MutatePointer(mutableFuncObject, *options, size);
 }
 
 double MutableFunctionSubject::Evaluate()
@@ -43,7 +44,7 @@ double MutableFunctionSubject::Evaluate()
 	double result = mutableFuncObject->GetDouble(*variables);
 
 	//This brevity weight term acts as a normalizing factor to prevent overfitting and large expressions
-	return Loss(result, correctResult) + BREVITY_WEIGHT * mutableFuncObject->GetHeight();
+	return Loss(result, correctResult) + BREVITY_WEIGHT * (double)mutableFuncObject->GetHeight();
 }
 
 void MutableFunctionSubject::Print(std::ostream& out) const
