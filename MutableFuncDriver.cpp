@@ -38,6 +38,11 @@
 //Options needed to tune mutation
 #include "MutationOptions.h"
 
+//Types needed to run simulations
+#include "ValueSupplier.h"
+#include "Subject.h"
+#include "MutableFunctionSubject.h"
+
 #include <vector>
 #include <iostream>
 #include <string>
@@ -74,6 +79,13 @@ struct Workspace
 	unordered_map<char, double> inputs;
 
 	MutationOptions options;
+};
+
+struct SimulationSpace
+{
+	MutationOptions options;
+	ValueSupplier supplier;
+	vector<unique_ptr<EvoAlg::Subject> > subjects;
 };
 
 class VariableNameSorter
@@ -169,6 +181,20 @@ static void MoveCommand(std::istream& terms, Workspace& space)
  */
 static unique_ptr<EvaluateToDouble> GenerateCommand(std::istream& terms, Workspace& space, bool copy);
 
+/**
+ * Enters simulation mode, starting the evolutionary cycle 
+ */
+static void EnterSimulateMode(std::istream& instream, Workspace& space)
+{
+	bool running = true;
+	SimulationSpace simSpace;
+	srand(time(NULL));
+	if(running)
+	{
+		cout << ">>>";
+	}
+}
+
 int main()
 {
 	Workspace space;
@@ -242,17 +268,23 @@ static void StartLine(std::istream& instream, Workspace& space, bool& running)
 			else if(term.compare("help") == 0)
 			{
 				cout << "A command line interface for working with MutableFunc objects and for testing various elements manually" << endl;
-				 cout << "Valid commands are:" << endl;
-				 cout << "quit: ends the program" << endl;
-				 cout << "print [object(s)]: prints objects later in the line" << endl;
+				cout << "Valid commands are:" << endl;
+				cout << "quit: ends the program" << endl;
+				cout << "print [object(s)]: prints objects later in the line" << endl;
 				cout << "eval [object(s)]: Prints the evaluation of objects later in the line" << endl;
-				 cout << "save [object] [variable]: Copies an object into a variable" << endl;
-				 cout << "move [object] [variable]: Moves an object into a variable (object will no longer be accessible if it is a variable)" << endl;
+				cout << "save [object] [variable]: Copies an object into a variable" << endl;
+				cout << "move [object] [variable]: Moves an object into a variable (object will no longer be accessible if it is a variable)" << endl;
 				cout << "[object]: Stores [object] in ans (equivalent to move [object] ans" << endl;
+				cout << "simulate: Enters simulation mode. Use command \"simulateHelp\" to get more details on simulation mode" << endl;
 				cout << "---" << endl;
 				cout << "[object] can be a variable, gen or combine command" << endl;
 				cout << "gen [function] [object1] [object2]: generates a functionEvaluator object with copies of object1 and object2 as arguments" << endl;
 				cout << "combine [function] [object1] [object2]: same as gen except objects are moved over" << endl;
+			}
+			else if(term.compare("simulateHelp") == 0)
+			{
+				cout << "A command line interface to run simulations to try and fit evaluateToDouble objects to given data or objects" << endl;
+
 			}
 			else if(term.compare("print") == 0)
 			{
@@ -286,6 +318,10 @@ static void StartLine(std::istream& instream, Workspace& space, bool& running)
 			{
 				ExportCommand(lineParse, space);
 			}
+			else if(term.compare("simulate") == 0)
+			{
+				EnterSimulateMode(instream, space);
+			}
 			else
 			{
 				space.ans = InterpretObject(lineParse, space, true, term);
@@ -303,16 +339,17 @@ static void StartLine(std::istream& instream, Workspace& space, bool& running)
 
 /*
  * Variable names are acceptable if they cannot be interpreted as a number, and are not on the following list
- * [gen, combine, ans, all, input, to]
+ * [gen, combine, ans, all, input, to, sorted, simulate]
  * This list is the list of commands that return an evaluateToDouble and therefore are interpreted as ans
  * 		object for parsing purposes, as well as some keywords that are used in place of objects
  */
 static bool CheckVariableName(const string& s)
 {
-	return !(IsNumber(s) || s.compare("combine") == 0 || 
-			s.compare("gen") == 0 || s.compare("ans") == 0 || 
-			s.compare("all") == 0|| s.compare("input") == 0 
-			|| s.compare("to") == 0 || s.compare("sorted") == 0);
+	return !(IsNumber(s) || s.compare("combine") == 0 
+			|| s.compare("gen") == 0 || s.compare("ans") == 0 
+			|| s.compare("all") == 0|| s.compare("input") == 0 
+			|| s.compare("to") == 0 || s.compare("sorted") == 0
+			|| s.compare("simulate") == 0);
 }
 
 static unique_ptr<EvaluateToDouble> InterpretObject(std::istream& terms, Workspace& space, bool copy, const string& term)
