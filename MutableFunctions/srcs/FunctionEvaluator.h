@@ -34,7 +34,7 @@ namespace MutableFuncs
         virtual std::string Print() const;
 
         virtual std::unique_ptr<EvaluateToDouble> Clone() const;
-        virtual void Mutate(MutationOptions& opt);
+        virtual void Mutate(MutationOptions& opt, int size);
 
         virtual void ExportBatch(std::ostream& out) const;        
 
@@ -42,6 +42,7 @@ namespace MutableFuncs
         
         virtual void CollectVariables(std::unordered_set<char>& variables) const;	  
         virtual int GetHeight() const;        
+        virtual int GetSize() const;        
     private:
         std::vector < std::unique_ptr < EvaluateToDouble > > args;
         FunctionEnum func;

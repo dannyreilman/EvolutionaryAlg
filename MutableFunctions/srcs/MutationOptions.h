@@ -19,6 +19,7 @@ namespace MutableFuncs
         double MultiplicationIdentityChance;
         double DivisionIdentityChance;
 
+        int SumOfChances;
         double InputIdentityChance;
 
         double IdentityReductionChance;

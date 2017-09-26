@@ -27,7 +27,7 @@ double EvaluateToDouble::GetDouble() const
 	return GetDouble(dummyVariables);
 }
 
-void EvaluateToDouble::MutatePointer(std::unique_ptr<EvaluateToDouble>& pointer, MutationOptions& opt)
+void EvaluateToDouble::MutatePointer(std::unique_ptr<EvaluateToDouble>& pointer, MutationOptions& opt, int size)
 {
 	int num = rand() % 100;
 	if(num < opt.IdentityReductionChance)
@@ -38,8 +38,8 @@ void EvaluateToDouble::MutatePointer(std::unique_ptr<EvaluateToDouble>& pointer,
 			pointer = move(temp);
 		}
 	}
-	pointer = Function::PossibleIdentity(pointer, opt);
-	pointer->Mutate(opt);
+	pointer = Function::PossibleIdentity(pointer, opt, size);
+    pointer->Mutate(opt, size);
 }
 
 void EvaluateToDouble::ExportPointer(std::unique_ptr<EvaluateToDouble>& pointer, const std::string& name, std::ostream& out)
@@ -73,4 +73,9 @@ void EvaluateToDouble::CollectVariables(std::unordered_set<char>& variables) con
 int EvaluateToDouble::GetHeight() const
 {
 	return 1;
+}
+
+int EvaluateToDouble::GetSize() const
+{
+    return 1;
 }

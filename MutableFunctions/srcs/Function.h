@@ -25,7 +25,7 @@ namespace MutableFuncs
 		static double Eval(FunctionEnum in, const std::vector<std::unique_ptr<EvaluateToDouble> >& args, const std::unordered_map<char, double>& variables);
 		static std::string Print(FunctionEnum in, const std::vector<std::unique_ptr<EvaluateToDouble> >& args);
 
-		static std::unique_ptr<EvaluateToDouble> PossibleIdentity(std::unique_ptr<EvaluateToDouble>& arg, const MutationOptions& opt);
+		static std::unique_ptr<EvaluateToDouble> PossibleIdentity(std::unique_ptr<EvaluateToDouble>& arg, const MutationOptions& opt, int size);
 
 		static std::string GetGenerativeCommand(FunctionEnum in);
 	private:

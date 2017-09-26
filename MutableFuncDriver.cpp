@@ -223,6 +223,10 @@ int main()
 	valueReader.ignore(250, ' ');
 	valueReader >> space.options.DivisionIdentityChance;
 
+    
+    space.options.SumOfChances = ceil(space.options.AdditionIdentityChance + space.options.SubtractionIdentityChance 
+                        + space.options.MultiplicationIdentityChance + space.options.DivisionIdentityChance);
+                        
 	//end functions
 	valueReader.ignore(250, ' ');
 	valueReader >> space.options.InputIdentityChance;

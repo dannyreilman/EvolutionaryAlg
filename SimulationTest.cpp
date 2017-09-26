@@ -24,7 +24,7 @@ using namespace std;
 
 using mutableFuncObj = unique_ptr<MutableFuncs::EvaluateToDouble>;
 
-static double EPSILON = 0.0000001;
+static double EPSILON = 0.00001;
 
 int main()
 {
@@ -44,12 +44,21 @@ int main()
 	mainArgs.push_back(mutableFuncObj(new MutableFuncs::FunctionEvaluator(yArgs.begin(), yArgs.end(), MutableFuncs::FunctionEnum::Multiplication)));
 
 
-    mutableFuncObj toTestObject(
+    mutableFuncObj toTestObjectHard(
             new MutableFuncs::FunctionEvaluator(mainArgs.begin(),
                                     mainArgs.end(),
                                     MutableFuncs::FunctionEnum::Addition));
 
-    FunctionSupply toTest(std::move(toTestObject), -1000, 1000);
+    vector< mutableFuncObj > args;
+    args.push_back(mutableFuncObj(new MutableFuncs::VariableDouble('x')));
+    args.push_back(mutableFuncObj(new MutableFuncs::SimpleDouble(10)));
+
+    mutableFuncObj toTestObjectEasy(
+        new MutableFuncs::FunctionEvaluator(args.begin(),
+                                args.end(),
+                                MutableFuncs::FunctionEnum::Addition));
+
+    FunctionSupply toTest(std::move(toTestObjectHard), -1000, 1000);
 
     MutableFuncs::MutationOptions opt;
 
@@ -76,6 +85,8 @@ int main()
     valueReader.ignore(250, ' ');
     valueReader >> opt.DivisionIdentityChance;
 
+    opt.SumOfChances = ceil(opt.AdditionIdentityChance + opt.SubtractionIdentityChance + opt.MultiplicationIdentityChance + opt.DivisionIdentityChance);
+
     //end functions
     valueReader.ignore(250, ' ');
     valueReader >> opt.InputIdentityChance;
@@ -100,7 +111,7 @@ int main()
         unique_ptr<EvoAlg::Subject> temp(new MutableFunctionSubject(&opt, &toTest));
         subjects.push_back(std::move(temp));
     }
-
+    
 	bool running = true;
 	int iters;
 	while(running)
@@ -112,57 +123,59 @@ int main()
 		if(iters == 0)
 		{
 			stopOnSlowdown = true;
-			iters = 10000;
+			iters = 100000;
 		}
 		
 		if(iters >= 0)
 		{
-			//This returns infinity
-			double secondLastError = 1.0/0.0;
-			double lastError = 1000000000000000.0;
+			double secondLastError = 0;
+			double lastError = 0;
 
-			//Second term checks every ten iters if the last error was small enough to end iterations
-			for(int i = 0; i < iters || (i % 10 == 0 && (stopOnSlowdown && abs(secondLastError - lastError) < EPSILON)); ++i)
+            //Second term checks every ten iters if the last error was small enough to end iterations
+            //Starts checking on the third iteration so last two errors are defined
+			for(int i = 0; i < iters && (!stopOnSlowdown || ((i % 10 != 3) || (abs(secondLastError - lastError) > EPSILON))); ++i)
 			{
 				//Do generation
-				
-				//Sort by error, lower is better
-				std::sort(subjects.begin(), subjects.end(), EvoAlg::Subject::SubjectComparator());
-				
-				//Kill bad ones and replace with good ones
-				for(unsigned int i = 0; i < subjects.size()/4; ++i)
-				{
-					subjects[subjects.size() - 1 - i].reset(nullptr);
-					subjects[subjects.size() - 1 - i] = std::move(subjects[i]->Clone());
-				}
 				
 				//Mutations
 				for(unsigned int i = 0; i < subjects.size(); ++i)
 				{
 					subjects[i]->Mutate();
 				}
-
-				toTest.NextGeneration(i);
+                				
+				//Sort by error, lower is better
+				std::sort(subjects.begin(), subjects.end(), EvoAlg::Subject::SubjectComparator());
+                
+                secondLastError = lastError;
+                lastError = subjects[0]->Evaluate();
+                
+                
+				//Kill bad ones and replace with good ones
+				for(unsigned int i = 0; i < subjects.size()/2; ++i)
+				{
+					subjects[subjects.size() - 1 - i].reset(nullptr);
+					subjects[subjects.size() - 1 - i] = std::move(subjects[i]->Clone());
+                }
+                
+                toTest.NextGeneration(i);
+                
 				opt.simpleDoubleShift /= opt.IterationChange;
 				opt.AdditionIdentityChance /= opt.IterationChange;
 				opt.SubtractionIdentityChance /= opt.IterationChange;
 				opt.MultiplicationIdentityChance /= opt.IterationChange;
 				opt.DivisionIdentityChance /= opt.IterationChange;
-				opt.InputIdentityChance /= opt.IterationChange;
+                opt.InputIdentityChance /= opt.IterationChange;
+                
 				
-				//IdentityReduction is not reduced over time so eventually large expressions will drift back together
-				//opt.IdentityReductionChance /= opt.IterationChange;
-
-				secondLastError = lastError;
-				lastError = subjects[0]->Evaluate();
-				
-			}
+            }
+            
 			std::sort(subjects.begin(), subjects.end(), EvoAlg::Subject::SubjectComparator());    
 			
 			for(auto it = toTest.GetValue().first->begin(); it != toTest.GetValue().first->end(); ++it)
 			{
 				cout << it->first << " = " << it->second << endl;
-			}
+            }
+            
 			cout << "Result = " << toTest.GetValue().second << endl;
 			for(unsigned int i = 0; i < subjects.size(); ++i)
 			{
