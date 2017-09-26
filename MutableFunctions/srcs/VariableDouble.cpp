@@ -55,3 +55,5 @@ void VariableDouble::CollectVariables(std::unordered_set<char>& variables) const
 {
 	variables.insert(variableName);
 }
+
+

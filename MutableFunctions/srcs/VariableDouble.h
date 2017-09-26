@@ -32,7 +32,7 @@ public:
 
 	virtual bool IsInput() const;
 	
-	virtual void CollectVariables(std::unordered_set<char>& variables) const;	
+    virtual void CollectVariables(std::unordered_set<char>& variables) const;	
 private:
 	char variableName;
 };

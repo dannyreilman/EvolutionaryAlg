@@ -24,7 +24,7 @@ using namespace std;
 
 using mutableFuncObj = unique_ptr<MutableFuncs::EvaluateToDouble>;
 
-static double EPSILON = 0.0001;
+static double EPSILON = 0.00001;
 
 int main()
 {
@@ -58,7 +58,7 @@ int main()
                                 args.end(),
                                 MutableFuncs::FunctionEnum::Addition));
 
-    FunctionSupply toTest(std::move(toTestObjectEasy), -1000, 1000);
+    FunctionSupply toTest(std::move(toTestObjectHard), -1000, 1000);
 
     MutableFuncs::MutationOptions opt;
 
@@ -85,6 +85,8 @@ int main()
     valueReader.ignore(250, ' ');
     valueReader >> opt.DivisionIdentityChance;
 
+    opt.SumOfChances = ceil(opt.AdditionIdentityChance + opt.SubtractionIdentityChance + opt.MultiplicationIdentityChance + opt.DivisionIdentityChance);
+
     //end functions
     valueReader.ignore(250, ' ');
     valueReader >> opt.InputIdentityChance;
@@ -109,7 +111,7 @@ int main()
         unique_ptr<EvoAlg::Subject> temp(new MutableFunctionSubject(&opt, &toTest));
         subjects.push_back(std::move(temp));
     }
-
+    
 	bool running = true;
 	int iters;
 	while(running)
@@ -126,12 +128,12 @@ int main()
 		
 		if(iters >= 0)
 		{
-			//This returns infinity
-			double secondLastError = 1.0/0.0;
-			double lastError = 1000000000000000.0;
+			double secondLastError = 0;
+			double lastError = 0;
 
-			//Second term checks every ten iters if the last error was small enough to end iterations
-			for(int i = 0; i < iters || (i % 10 == 0 && (stopOnSlowdown && abs(secondLastError - lastError) < EPSILON)); ++i)
+            //Second term checks every ten iters if the last error was small enough to end iterations
+            //Starts checking on the third iteration so last two errors are defined
+			for(int i = 0; i < iters && (!stopOnSlowdown || ((i % 10 != 3) || (abs(secondLastError - lastError) > EPSILON))); ++i)
 			{
 				//Do generation
 				
@@ -140,13 +142,13 @@ int main()
 				{
 					subjects[i]->Mutate();
 				}
-
                 				
 				//Sort by error, lower is better
 				std::sort(subjects.begin(), subjects.end(), EvoAlg::Subject::SubjectComparator());
                 
                 secondLastError = lastError;
                 lastError = subjects[0]->Evaluate();
+                
                 
 				//Kill bad ones and replace with good ones
 				for(unsigned int i = 0; i < subjects.size()/2; ++i)
@@ -155,7 +157,8 @@ int main()
 					subjects[subjects.size() - 1 - i] = std::move(subjects[i]->Clone());
                 }
                 
-				toTest.NextGeneration(i);
+                toTest.NextGeneration(i);
+                
 				opt.simpleDoubleShift /= opt.IterationChange;
 				opt.AdditionIdentityChance /= opt.IterationChange;
 				opt.SubtractionIdentityChance /= opt.IterationChange;

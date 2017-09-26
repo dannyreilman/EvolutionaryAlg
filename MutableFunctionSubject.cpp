@@ -6,7 +6,7 @@
 
 #include <cmath>
 
-static double BREVITY_WEIGHT = 0.5;
+static double BREVITY_WEIGHT = 50;
 
 //Loss function used
 static double Loss(double incorrect, double correct)

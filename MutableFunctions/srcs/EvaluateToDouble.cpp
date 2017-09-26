@@ -39,7 +39,7 @@ void EvaluateToDouble::MutatePointer(std::unique_ptr<EvaluateToDouble>& pointer,
 		}
 	}
 	pointer = Function::PossibleIdentity(pointer, opt, size);
-	pointer->Mutate(opt, size);
+    pointer->Mutate(opt, size);
 }
 
 void EvaluateToDouble::ExportPointer(std::unique_ptr<EvaluateToDouble>& pointer, const std::string& name, std::ostream& out)
