@@ -29,17 +29,23 @@ double EvaluateToDouble::GetDouble() const
 
 void EvaluateToDouble::MutatePointer(std::unique_ptr<EvaluateToDouble>& pointer, MutationOptions& opt, int size)
 {
-	int num = rand() % 100;
-	if(num < opt.IdentityReductionChance)
+	double numIdentity = ((rand() % 10000) / 10000.0);
+
+	//Reduce if possible
+	if(numIdentity < (opt.ExpectedReduction / size))
 	{
-		std::unique_ptr<EvaluateToDouble> temp = pointer->Reduce(opt.IdentityReductionWidth);
+		std::unique_ptr<EvaluateToDouble> temp = pointer->Reduce();
 		if(temp)
 		{
 			pointer = move(temp);
 		}
 	}
+
+	//Mutate (This is the recursive part)
+	pointer->Mutate(opt, size);
+	
+	//While heading back up the stack, possibly increase the size of the tree below you by generating an identity
 	pointer = Function::PossibleIdentity(pointer, opt, size);
-    pointer->Mutate(opt, size);
 }
 
 void EvaluateToDouble::ExportPointer(std::unique_ptr<EvaluateToDouble>& pointer, const std::string& name, std::ostream& out)
@@ -60,7 +66,7 @@ bool EvaluateToDouble::IsInput() const
 	return false;
 }
 
-std::unique_ptr<EvaluateToDouble> EvaluateToDouble::Reduce(double width) const
+std::unique_ptr<EvaluateToDouble> EvaluateToDouble::Reduce() const
 {
 	return std::unique_ptr<EvaluateToDouble>(nullptr);
 }
@@ -79,3 +85,10 @@ int EvaluateToDouble::GetSize() const
 {
     return 1;
 }
+
+//Measures the relative magnitude of 
+double EvaluateToDouble::GetCost() const
+{
+	return 0;
+}
+

@@ -8,12 +8,14 @@
  
 #include <unordered_map>
 #include <unordered_set>
+#include <vector>
 
 class ValueSupplier
 {
 public:
 	virtual ~ValueSupplier() {}
-	virtual std::pair<const std::unordered_map<char, double>*, double> GetValue() = 0;
+
+	virtual std::pair<std::vector<std::unordered_map<char, double> >*, std::vector<double>* > GetValues() = 0;
 
 	virtual const std::unordered_set<char>& PeakVariables() = 0;
 

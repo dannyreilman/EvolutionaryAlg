@@ -18,12 +18,12 @@ namespace MutableFuncs
         double SubtractionIdentityChance;
         double MultiplicationIdentityChance;
         double DivisionIdentityChance;
-
         int SumOfChances;
+        double ExpectedIdentities;
+
         double InputIdentityChance;
 
-        double IdentityReductionChance;
-        double IdentityReductionWidth;
+        double ExpectedReduction;
 
         double IterationChange;
     };

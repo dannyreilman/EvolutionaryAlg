@@ -42,7 +42,7 @@ namespace MutableFuncs
 
         virtual bool IsNumber() const;
         virtual bool IsInput() const;
-        virtual std::unique_ptr<EvaluateToDouble> Reduce(double width) const;
+        virtual std::unique_ptr<EvaluateToDouble> Reduce() const;
 
         //puts all used variables in "variables"
         virtual void CollectVariables(std::unordered_set<char>& variables) const;
@@ -52,6 +52,8 @@ namespace MutableFuncs
         //Returns the node count of this evaluateToDouble when represented as a tree
         virtual int GetSize() const;
 
+        virtual double GetCost() const;
+        
         static void MutatePointer(std::unique_ptr<EvaluateToDouble>& pointer, MutationOptions& opt, int size);
         
         static void MutatePointer(std::unique_ptr<EvaluateToDouble>& pointer, MutationOptions& opt)

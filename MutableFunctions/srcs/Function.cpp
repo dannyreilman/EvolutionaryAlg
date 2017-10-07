@@ -183,56 +183,57 @@ namespace MutableFuncs
 	//Sometimes causes identities to form, not changing the overall value, unless an input variable is inserted
 	std::unique_ptr<EvaluateToDouble> Function::PossibleIdentity(std::unique_ptr<EvaluateToDouble>& arg, const MutationOptions& opt, int size)
 	{
-        double sum = 0;
+		//This function is based of isolating the expected value of a binomial distribution
+		//E(X) = np, E(X)/n = p
+		//Use definition of 1/10000
+		double numIdentity = ((rand() % 10000) / 10000.0);
+		int identityChoice = (rand() % opt.SumOfChances);
+		int numInput = rand() % 100;
 
-        //multiplying by size reduces the odds of mutation by size. This keeps the expected number of mutations constant
-        //with regard to size
-		int num = (rand() % opt.SumOfChances);
-		int num2 = rand() % 100;
-
-		double dubNum = (double)num;
-		double dubNum2 = (double)num2;
-
-		sum += opt.AdditionIdentityChance;
-		if(dubNum < ceil(sum / size))
+		double sum = 0;
+		if(numIdentity < opt.ExpectedIdentities / size)
 		{
-			if(dubNum2 < opt.InputIdentityChance && opt.validInputMutations.size() > 0)
+			sum += opt.AdditionIdentityChance;
+			if(identityChoice < sum)
 			{
-				return move(MakeInputIdentity(FunctionEnum::Addition, arg, opt.validInputMutations));
+				if(numInput < opt.InputIdentityChance && opt.validInputMutations.size() > 0)
+				{
+					return move(MakeInputIdentity(FunctionEnum::Addition, arg, opt.validInputMutations));
+				}
+				return move(MakeIdentity(FunctionEnum::Addition, arg));
 			}
-			return move(MakeIdentity(FunctionEnum::Addition, arg));
+
+			sum += opt.SubtractionIdentityChance;
+			if(identityChoice < sum)
+			{
+				if(numInput < opt.InputIdentityChance && opt.validInputMutations.size() > 0)
+				{
+					return move(MakeInputIdentity(FunctionEnum::Subtraction, arg, opt.validInputMutations));
+				}
+				return move(MakeIdentity(FunctionEnum::Subtraction, arg));
+			}
+
+			sum += opt.MultiplicationIdentityChance;
+			if(identityChoice < sum)
+			{
+				if(numInput < opt.InputIdentityChance && opt.validInputMutations.size() > 0)
+				{
+					return move(MakeInputIdentity(FunctionEnum::Multiplication, arg, opt.validInputMutations));
+				}
+				return move(MakeIdentity(FunctionEnum::Multiplication, arg));
+			}
+
+			sum += opt.DivisionIdentityChance;
+			if(identityChoice < sum)
+			{
+				if(numInput < opt.InputIdentityChance && opt.validInputMutations.size() > 0)
+				{
+					return move(MakeInputIdentity(FunctionEnum::Division, arg, opt.validInputMutations));
+				}
+				return move(MakeIdentity(FunctionEnum::Division, arg));
+			}
 		}
 
-		sum += opt.SubtractionIdentityChance;
-		if(dubNum < ceil(sum / size))
-		{
-			if(dubNum2 < opt.InputIdentityChance && opt.validInputMutations.size() > 0)
-			{
-				return move(MakeInputIdentity(FunctionEnum::Subtraction, arg, opt.validInputMutations));
-			}
-			return move(MakeIdentity(FunctionEnum::Subtraction, arg));
-		}
-
-		sum += opt.MultiplicationIdentityChance;
-		if(dubNum < ceil(sum / size))
-		{
-			if(dubNum2 < opt.InputIdentityChance && opt.validInputMutations.size() > 0)
-			{
-				return move(MakeInputIdentity(FunctionEnum::Multiplication, arg, opt.validInputMutations));
-			}
-			return move(MakeIdentity(FunctionEnum::Multiplication, arg));
-		}
-
-		sum += opt.DivisionIdentityChance;
-		if(dubNum < ceil(sum / size))
-		{
-			if(dubNum2 < opt.InputIdentityChance && opt.validInputMutations.size() > 0)
-			{
-				return move(MakeInputIdentity(FunctionEnum::Division, arg, opt.validInputMutations));
-			}
-			return move(MakeIdentity(FunctionEnum::Division, arg));
-		}
-		
 		return move(arg);
 	}
 }

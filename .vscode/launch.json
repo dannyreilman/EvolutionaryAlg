@@ -2,6 +2,27 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "name": "Simulationtest",
+            "miDebuggerPath": "C:/MinGW/bin/gdb.exe",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceRoot}/SimulationTest.exe",
+            "args": [],
+            "stopAtEntry": true,
+            "cwd": "${workspaceRoot}",
+            "environment": [],
+            "externalConsole": true,
+            "linux": {
+                "MIMode": "gdb"
+            },
+            "osx": {
+                "MIMode": "lldb"
+            },
+            "windows": {
+                "MIMode": "gdb"
+            }
+        },
+        {
             "preLaunchTask": "make MutableFuncDriver.exe",
             "name": "MutableFunc driver",
             "miDebuggerPath": "C:/MinGW/bin/gdb.exe",

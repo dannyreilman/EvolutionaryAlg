@@ -12,7 +12,7 @@ EvolutionaryFlag = -I../EvoAlg/EvolutionaryAlgorithm
 debug_or_optimize = -g
 
 #Other useful flags 
-CXXFLAGS = -Wall -Werror --std=c++11 -pedantic -O3
+CXXFLAGS = -Wall -Werror --std=c++11 -pedantic $(debug_or_optimize)
 
 MutableFunctionAll = MutableFunctions/bin/*.o
 

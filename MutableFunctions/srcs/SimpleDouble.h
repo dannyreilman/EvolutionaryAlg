@@ -27,7 +27,8 @@ namespace MutableFuncs
 
         virtual void ExportBatch(std::ostream& out) const;        
 
-        virtual bool IsNumber() const;        
+        virtual bool IsNumber() const;      
+        virtual double GetCost() const;
     private:
         double internalDouble;
     };

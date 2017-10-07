@@ -38,11 +38,12 @@ namespace MutableFuncs
 
         virtual void ExportBatch(std::ostream& out) const;        
 
-        virtual std::unique_ptr<EvaluateToDouble> Reduce(double width);        
+        virtual std::unique_ptr<EvaluateToDouble> Reduce();        
         
         virtual void CollectVariables(std::unordered_set<char>& variables) const;	  
         virtual int GetHeight() const;        
-        virtual int GetSize() const;        
+        virtual int GetSize() const;   
+        virtual double GetCost() const;        
     private:
         std::vector < std::unique_ptr < EvaluateToDouble > > args;
         FunctionEnum func;

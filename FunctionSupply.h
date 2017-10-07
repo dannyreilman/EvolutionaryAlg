@@ -15,23 +15,24 @@
 class FunctionSupply : public ValueSupplier
 {
 public:
-	FunctionSupply(std::unique_ptr<MutableFuncs::EvaluateToDouble> func_in, int min_in, int max_in);
+	FunctionSupply(std::unique_ptr<MutableFuncs::EvaluateToDouble> func_in, int min_in, int max_in, int sampleSize_in);
 	
-	virtual std::pair<const std::unordered_map<char, double>*, double> GetValue();
+	virtual std::pair<std::vector<std::unordered_map<char, double> >*, std::vector<double>* > GetValues();
 	
 	virtual const std::unordered_set<char>& PeakVariables();
 	virtual void NextGeneration(int generationNumber);
 	
 private:
 	std::unordered_set<char> variablesUsed;
-	std::unordered_map<char, double> variableValues;
+	std::vector<std::unordered_map<char, double> > variableValues;
 
 	std::unique_ptr<MutableFuncs::EvaluateToDouble> func; 
-	double value;
+	std::vector<double> values;
 
 	int min;
 	int max;
 
+	int sampleSize;
 };
 
 #endif

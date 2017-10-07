@@ -101,21 +101,32 @@ void FunctionEvaluator::ExportBatch(std::ostream& out) const
     }
 }
 
-std::unique_ptr<EvaluateToDouble> FunctionEvaluator::Reduce(double width)
+std::unique_ptr<EvaluateToDouble> FunctionEvaluator::Reduce()
 {
-    for(unsigned int i = args.size() - 1; i > 0; --i)
-    {
-        if((args[i]->IsNumber() && abs(args[i]->GetDouble() - Function::GetIdentity(func)) < width) || args[i]->IsInput())
-        {
-            return move(args[0]);
-        }
-    }
+    unsigned int choice = rand() % args.size();
 
-    if(Function::IsSecondArgSafe(func) && 
-    ((args[0]->IsNumber() && (abs(args[0]->GetDouble() - Function::GetIdentity(func)) < width)) || args[0]->IsInput()))
+    unsigned int i = choice;
+    do
     {
-        return move(args[1]);
+        bool viableChoice = true;
+        for(unsigned int i = 0; i < args.size() && viableChoice; ++i)
+        {
+            if(i != choice)
+            {
+                if(!(args[i]->IsNumber() || args[i]->IsInput()))
+                {
+                    viableChoice = false;
+                }
+            }
+        }
+
+        if(viableChoice)
+            return std::move(args[choice]);
+
+        i = (i + 1) % args.size();
     }
+    while(i != choice);
+
 
     return std::unique_ptr<EvaluateToDouble>(nullptr);
 } 
@@ -150,4 +161,14 @@ int FunctionEvaluator::GetSize() const
         sum += (*it)->GetSize();
     }
     return sum + 1;
+}
+
+double FunctionEvaluator::GetCost() const
+{
+    int sum = 0;
+    for(auto it = args.cbegin(); it != args.cend(); ++it)
+    {
+        sum += (*it)->GetCost();
+    }
+    return sum;
 }

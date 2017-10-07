@@ -50,3 +50,8 @@ bool SimpleDouble::IsNumber() const
 {
     return true;
 }  
+
+double SimpleDouble::GetCost() const
+{
+    return pow(internalDouble, 2);
+}

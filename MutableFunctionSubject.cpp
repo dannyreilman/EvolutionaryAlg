@@ -5,8 +5,10 @@
 #include "MutationOptions.h"
 
 #include <cmath>
+#include <iostream>
 
-static double BREVITY_WEIGHT = 50;
+static double BREVITY_WEIGHT = 10;
+static double DOUBLE_SHRINK_WEIGHT = 0.1;
 
 //Loss function used
 static double Loss(double incorrect, double correct)
@@ -33,18 +35,27 @@ MutableFunctionSubject::MutableFunctionSubject(MutableFuncs::MutationOptions *op
 
 void MutableFunctionSubject::Mutate()
 {
-    int size = mutableFuncObject->GetSize();
+	int size = mutableFuncObject->GetSize();
 	MutableFuncs::EvaluateToDouble::MutatePointer(mutableFuncObject, *options, size);
 }
 
 double MutableFunctionSubject::Evaluate()
 {
-	const std::unordered_map<char, double>* variables = generator->GetValue().first;
-	double correctResult = generator->GetValue().second;
-	double result = mutableFuncObject->GetDouble(*variables);
+	std::vector<std::unordered_map<char, double> >* variables = generator->GetValues().first;
+	std::vector<double>* values = generator->GetValues().second;	
+	
+	double average = 0;
+	for(unsigned int i = 0; i < values->size(); ++i)
+	{	
+		average += Loss(mutableFuncObject->GetDouble((*variables)[i]), (*values)[i]);
+	}
+
+	average /= values->size();
 
 	//This brevity weight term acts as a normalizing factor to prevent overfitting and large expressions
-	return Loss(result, correctResult) + BREVITY_WEIGHT * (double)mutableFuncObject->GetHeight();
+	return average 
+		+ BREVITY_WEIGHT * (double)mutableFuncObject->GetSize()
+		+ DOUBLE_SHRINK_WEIGHT * sqrt((double)mutableFuncObject->GetCost());
 }
 
 void MutableFunctionSubject::Print(std::ostream& out) const

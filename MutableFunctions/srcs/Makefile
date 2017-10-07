@@ -2,7 +2,7 @@
 #Allows concise building of various MutableFunctions
 #Compiler
 CXX = g++
-CXXFLAGS = -Wall -Werror --std=c++11 -pedantic
+CXXFLAGS = -Wall -Werror --std=c++11 -pedantic -g
 BINPATH = ../bin/
 SOURCEPATH = MutableFunctions/srcs
 
