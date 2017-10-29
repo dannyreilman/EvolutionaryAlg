@@ -2,13 +2,20 @@
 #Allows concise building of various MutableFunctions
 #Compiler
 CXX = g++
-CXXFLAGS = -Wall -Werror --std=c++11 -pedantic -g
+CXXFLAGS = -Wall -Werror --std=c++11 -pedantic
+OPTIMIZE = -O3
+DEBUG = -g
 BINPATH = ../bin/
 SOURCEPATH = MutableFunctions/srcs
 
 define compile
 $(CXX) -o $(addprefix $(BINPATH), $@) $< -c $(CXXFLAGS) -I $(SOURCEPATH)
 endef
+
+debug: CXXFLAGS += $(DEBUG)
+debug: all
+release: CXXFLAGS += $(OPTIMIZE)
+release: all
 
 all: EvaluateToDouble.o SimpleDouble.o FunctionEvaluator.o VariableDouble.o Function.o
 

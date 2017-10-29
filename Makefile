@@ -17,10 +17,10 @@ CXXFLAGS = -Wall -Werror --std=c++11 -pedantic $(debug_or_optimize)
 MutableFunctionAll = MutableFunctions/bin/*.o
 
 Driver: MutableFuncDriver.cpp $(MutableFunctionAll)
-	$(CXX) $(CXXFLAGS) $(MutableFunctionsFlag) $^ -o $(MutableFuncDriverName)
+	$(CXX) $(CXXFLAGS) $(MutableFunctionsFlag) $(EvolutionaryFlag) $^ -o $(MutableFuncDriverName)
 
 SimulationTest.exe: SimulationTest.cpp MutableFunctionSubject.cpp FunctionSupply.cpp $(MutableFunctionAll)
-	$(CXX) $(CXXFLAGS) $(MutableFunctionsFlag)  $(EvolutionaryFlag) $^ -o $@
+	$(CXX) $(MutableFunctionsFlag)  $(EvolutionaryFlag) $(CXXFLAGS)  $^ -o $@
 
 clean: 
 	del *.exe /s

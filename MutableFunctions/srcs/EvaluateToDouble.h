@@ -54,6 +54,8 @@ namespace MutableFuncs
 
         virtual double GetCost() const;
         
+        virtual double GetComplexity(double grain) const;
+
         static void MutatePointer(std::unique_ptr<EvaluateToDouble>& pointer, MutationOptions& opt, int size);
         
         static void MutatePointer(std::unique_ptr<EvaluateToDouble>& pointer, MutationOptions& opt)

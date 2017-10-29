@@ -24,7 +24,7 @@ using namespace std;
 
 using mutableFuncObj = unique_ptr<MutableFuncs::EvaluateToDouble>;
 
-static double EPSILON = 0.01;
+static int BAIL_NUM = 5;
 
 int main()
 {
@@ -58,7 +58,7 @@ int main()
                                 args.end(),
                                 MutableFuncs::FunctionEnum::Addition));
 
-    FunctionSupply toTest(std::move(toTestObjectHard), -1000, 1000, 10);
+    FunctionSupply toTest(std::move(toTestObjectHard), -1000, 1000, 25);
 
     MutableFuncs::MutationOptions opt;
 	MutableFuncs::MutationOptions currentOpt;
@@ -117,28 +117,30 @@ int main()
     
 	bool running = true;
 	int iters;
+	int generation = 0;
+	
+	unique_ptr<EvoAlg::Subject> bestSoFar = subjects[0]->Clone();
 	while(running)
 	{
 		cout << "Move forward how many iterations? (0 to run until completion)" << endl;
 		cin >> iters;
-
-		currentOpt = opt;
 		
 		bool stopOnSlowdown = false;
 		if(iters == 0)
 		{
 			stopOnSlowdown = true;
-			iters = 100000;
+			iters = 250;
 		}
 		
+
 		if(iters >= 0)
 		{
-			double secondLastError = 0;
-			double lastError = 0;
+			int failsInARow = 0;
+			int goalGeneration = generation + iters;
 
-            //Second term checks every ten iters if the last error was small enough to end iterations
+			//Second term checks every ten iters if the last error was small enough to end iterations
             //Starts checking on the third iteration so last two errors are defined
-			for(int i = 0; i < iters && (!stopOnSlowdown || ((i % 10 != 3) || (abs(secondLastError - lastError) > EPSILON))); ++i)
+			for(; generation < goalGeneration && (!stopOnSlowdown || failsInARow < BAIL_NUM); ++generation)
 			{
 				//Do generation
 								
@@ -149,32 +151,49 @@ int main()
 				}
 		
 				//Sort by error, lower is better
-				std::sort(subjects.begin(), subjects.end(), EvoAlg::Subject::SubjectComparator());
+				std::sort(subjects.begin(), subjects.end(), EvoAlg::Subject::SubjectComparator(generation));
 				
 
 				//Kill bad ones and replace with good ones
-				for(unsigned int j = 0; j < subjects.size()/2; ++j)
+				for(unsigned int j = 0; j < subjects.size()/4; ++j)
 				{
 					subjects[subjects.size() - 1 - j].reset(nullptr);
 					subjects[subjects.size() - 1 - j] = std::move(subjects[j]->Clone());
 				}
 				
-				toTest.NextGeneration(i);
+				toTest.NextGeneration(generation);
 				
-				secondLastError = lastError;
-				lastError = subjects[0]->Evaluate();
 				
-				currentOpt.simpleDoubleShift /= currentOpt.IterationChange;
-				currentOpt.ExpectedIdentities /= currentOpt.IterationChange;
+				//currentOpt.simpleDoubleShift /= currentOpt.IterationChange;
+				//currentOpt.ExpectedIdentities /= currentOpt.IterationChange;
+
+				if(bestSoFar->Evaluate(generation) > subjects[subjects.size() - 1]->Evaluate(generation))
+				{
+					bestSoFar = subjects[subjects.size() - 1]->Clone();
+					failsInARow = 0;
+				}
+				else
+				{
+					++failsInARow;
+				}
             }
             
-			std::sort(subjects.rbegin(), subjects.rend(), EvoAlg::Subject::SubjectComparator());    
+			std::sort(subjects.rbegin(), subjects.rend(), EvoAlg::Subject::SubjectComparator(generation));    
 			
-            
-			for(unsigned int i = 0; i < subjects.size(); ++i)
+            cout << "Generation " << generation << endl;
+			for(unsigned int i = subjects.size() - 10; i < subjects.size(); ++i)
 			{
 				subjects[i]->Print(cout);
-				cout << " " << subjects[i]->Evaluate() << endl;
+				cout << " " << subjects[i]->Evaluate(generation) << endl;
+			}
+			cout << "Best So far ";
+			bestSoFar->Print(cout);
+			cout << endl << endl;
+
+			subjects.clear();
+			for(int i = 0; i < subjectCount; ++i)
+			{
+				subjects.push_back(std::move(bestSoFar->Clone()));
 			}
 		}
 		else

@@ -17,11 +17,18 @@ class Subject
 public:
     class SubjectComparator
     {
-    public:
+    public: 
+        SubjectComparator(int generation)
+        {
+            this->generation = generation;
+        }
+
         bool operator()(std::unique_ptr<Subject>& a, std::unique_ptr<Subject>& b)
         {
-            return a->Evaluate() < b->Evaluate();
+            return a->Evaluate(generation) < b->Evaluate(generation);
         }
+    private:
+        int generation;
     };
 
 	virtual ~Subject() {}
@@ -30,7 +37,7 @@ public:
 	virtual void Mutate() = 0;
 
 	//Returns a double to describe the fitness of this subject
-    virtual double Evaluate() = 0;
+    virtual double Evaluate(int generation) = 0;
     
     virtual void Print(std::ostream& out) const = 0;
 

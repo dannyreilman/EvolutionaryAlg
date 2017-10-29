@@ -172,3 +172,13 @@ double FunctionEvaluator::GetCost() const
     }
     return sum;
 }
+
+double FunctionEvaluator::GetComplexity(double grain) const
+{
+    int sum = 0;
+    for(auto it = args.cbegin(); it != args.cend(); ++it)
+    {
+        sum += (*it)->GetCost();
+    }
+    return sum;
+}

@@ -9,8 +9,8 @@
     "suppressTaskName": true,
     "tasks": [
         {
-            "taskName" : "make Addition_test.exe",
-            "args": ["Addition_test.exe"]
+            "taskName" : "make SimulationTest.exe",
+            "args": ["SimulationTest.exe"]
         },
         {
             "taskName" : "make MutableFuncDriver.exe",

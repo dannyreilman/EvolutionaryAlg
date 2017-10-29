@@ -24,7 +24,7 @@ public:
 
 	virtual void Mutate();
 	
-    virtual double Evaluate();
+    virtual double Evaluate(int generation);
     
     virtual void Print(std::ostream& out) const;    
 
@@ -33,7 +33,6 @@ public:
 private:
 	MutableFuncs::MutationOptions* options;
 	ValueSupplier* generator;
-
 	std::unique_ptr<MutableFuncs::EvaluateToDouble> mutableFuncObject;
 };
 

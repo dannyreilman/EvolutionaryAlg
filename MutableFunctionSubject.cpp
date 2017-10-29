@@ -5,16 +5,25 @@
 #include "MutationOptions.h"
 
 #include <cmath>
+#include <algorithm>
 #include <iostream>
 
-static double BREVITY_WEIGHT = 10;
-static double DOUBLE_SHRINK_WEIGHT = 0.1;
+//Loss is accuracyWeight(training error) + size(brevity weight + CAP_GENERATION * complexity_weight * average complexity) in the limit
+static double ACCURACY_WEIGHT = 1;
+static double BREVITY_WEIGHT = 0.25;
+
+static double COMPLEXITY_WEIGHT = 0;
+static int CAP_GENERATION = 50;
+static double COMPLEXITY_GRAIN = 0.25;
 
 //Loss function used
 static double Loss(double incorrect, double correct)
 {
-	//Square loss
+	//squared hinge loss
 	return std::pow(incorrect - correct, 2.0) / 2.0;
+	
+	//Percent Error
+	//return abs(100 * (double)(incorrect - correct) / (double)correct);
 }
 
 MutableFunctionSubject::MutableFunctionSubject(): options(nullptr), generator(nullptr), mutableFuncObject(nullptr) {}
@@ -39,7 +48,7 @@ void MutableFunctionSubject::Mutate()
 	MutableFuncs::EvaluateToDouble::MutatePointer(mutableFuncObject, *options, size);
 }
 
-double MutableFunctionSubject::Evaluate()
+double MutableFunctionSubject::Evaluate(int generation)
 {
 	std::vector<std::unordered_map<char, double> >* variables = generator->GetValues().first;
 	std::vector<double>* values = generator->GetValues().second;	
@@ -52,10 +61,14 @@ double MutableFunctionSubject::Evaluate()
 
 	average /= values->size();
 
-	//This brevity weight term acts as a normalizing factor to prevent overfitting and large expressions
-	return average 
-		+ BREVITY_WEIGHT * (double)mutableFuncObject->GetSize()
-		+ DOUBLE_SHRINK_WEIGHT * sqrt((double)mutableFuncObject->GetCost());
+	//Accuracy -> Loss
+	//Brevity weight -> Normalization using Number of elements
+	//Complexity Weight -> Normalization based on roundness of numbers, scales up and caps at cap generation
+	double averageComplexity = mutableFuncObject->GetComplexity(COMPLEXITY_GRAIN) / mutableFuncObject->GetSize();
+
+	return ACCURACY_WEIGHT * average 
+		+ BREVITY_WEIGHT * mutableFuncObject->GetSize()
+		+ std::min(CAP_GENERATION, generation) * COMPLEXITY_WEIGHT * averageComplexity;
 }
 
 void MutableFunctionSubject::Print(std::ostream& out) const

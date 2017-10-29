@@ -1,10 +1,10 @@
 //Default mutation rates
-NumberDrift 5
+NumberDrift 1
 AdditionIdentityProduction 25
 SubtractionIdentityProduction 25
 MultiplicationIdentityProduction 25
 DivisionIdentityProduction 25
-ExpectedIdentities 0.25
+ExpectedIdentities 0.1
 InputIdentityChance 50
-ExpectedReduction 0.25
-IterationChange 1.25
+ExpectedReduction 0.1
+IterationChange 1.1

@@ -55,3 +55,8 @@ double SimpleDouble::GetCost() const
 {
     return pow(internalDouble, 2);
 }
+
+double SimpleDouble::GetComplexity(double grain) const
+{
+    return (grain / 2) - abs(fmod(internalDouble, grain) - (grain / 2));
+}

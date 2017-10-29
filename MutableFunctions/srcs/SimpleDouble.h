@@ -29,6 +29,8 @@ namespace MutableFuncs
 
         virtual bool IsNumber() const;      
         virtual double GetCost() const;
+        virtual double GetComplexity(double grain) const;	
+        
     private:
         double internalDouble;
     };

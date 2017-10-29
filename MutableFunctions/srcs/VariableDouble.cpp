@@ -1,6 +1,8 @@
 #include "VariableDouble.h"
 #include "bad_evaluation.h"
 
+#include <cmath>
+
 using namespace MutableFuncs;
 
 VariableDouble::VariableDouble(char variableName_in, std::unordered_map<char, double>& variables): variableName(variableName_in) 
@@ -56,4 +58,7 @@ void VariableDouble::CollectVariables(std::unordered_set<char>& variables) const
 	variables.insert(variableName);
 }
 
-
+double VariableDouble::GetComplexity(double grain) const
+{
+	return grain;
+}

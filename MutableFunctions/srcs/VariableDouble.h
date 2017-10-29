@@ -32,7 +32,8 @@ public:
 
 	virtual bool IsInput() const;
 	
-    virtual void CollectVariables(std::unordered_set<char>& variables) const;	
+	virtual void CollectVariables(std::unordered_set<char>& variables) const;	
+	virtual double GetComplexity(double grain) const;	
 private:
 	char variableName;
 };

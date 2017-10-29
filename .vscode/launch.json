@@ -2,13 +2,14 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Simulationtest",
-            "miDebuggerPath": "C:/MinGW/bin/gdb.exe",
+            "preLaunchTask": "make SimulationTest.exe",
+            "name": "SimulationTest",
+            "miDebuggerPath": "C:/Program Files/mingw-w64/x86_64-7.1.0-posix-seh-rt_v5-rev0/mingw64/bin/gdb.exe",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${workspaceRoot}/SimulationTest.exe",
+            "program": "D:/ProgrammingStuff/sideProjects/EvoAlg/SimulationTest.exe",
             "args": [],
-            "stopAtEntry": true,
+            "stopAtEntry": false,
             "cwd": "${workspaceRoot}",
             "environment": [],
             "externalConsole": true,

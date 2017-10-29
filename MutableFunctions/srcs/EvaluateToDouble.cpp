@@ -92,3 +92,7 @@ double EvaluateToDouble::GetCost() const
 	return 0;
 }
 
+double EvaluateToDouble::GetComplexity(double grain) const
+{
+	return 0;
+}

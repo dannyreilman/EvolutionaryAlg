@@ -44,6 +44,7 @@ namespace MutableFuncs
         virtual int GetHeight() const;        
         virtual int GetSize() const;   
         virtual double GetCost() const;        
+        virtual double GetComplexity(double grain) const;        
     private:
         std::vector < std::unique_ptr < EvaluateToDouble > > args;
         FunctionEnum func;
