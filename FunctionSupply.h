@@ -5,34 +5,25 @@
  * By Danny Reilman<reilman@umich.edu>
  */
 
-#include "ValueSupplier.h"
+#include "RangedFunctoralSupplier.h"
 #include "EvaluateToDouble.h"
 
 #include <memory>
 #include <unordered_set>
 #include <unordered_map>
 
-class FunctionSupply : public ValueSupplier
+class FunctionSupply : public RangedFunctoralSupplier
 {
 public:
 	FunctionSupply(std::unique_ptr<MutableFuncs::EvaluateToDouble> func_in, int min_in, int max_in, int sampleSize_in);
+protected:
+	//This is the implementation of value generation, inputs are guarenteed to be within the range
+	virtual double GenerateValue(std::unordered_map<char, double>& inputs);
 	
-	virtual std::pair<std::vector<std::unordered_map<char, double> >*, std::vector<double>* > GetValues();
-	
-	virtual const std::unordered_set<char>& PeakVariables();
-	virtual void NextGeneration(int generationNumber);
-	
+	//This is the implementation which decides how many and named what the variables are
+	virtual std::unordered_set<char> GetVariables();
 private:
-	std::unordered_set<char> variablesUsed;
-	std::vector<std::unordered_map<char, double> > variableValues;
-
 	std::unique_ptr<MutableFuncs::EvaluateToDouble> func; 
-	std::vector<double> values;
-
-	int min;
-	int max;
-
-	int sampleSize;
 };
 
 #endif

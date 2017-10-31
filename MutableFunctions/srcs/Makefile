@@ -17,7 +17,7 @@ debug: all
 release: CXXFLAGS += $(OPTIMIZE)
 release: all
 
-all: EvaluateToDouble.o SimpleDouble.o FunctionEvaluator.o VariableDouble.o Function.o
+all: EvaluateToDouble.o SimpleDouble.o FunctionEvaluator.o VariableDouble.o Function.o Generator.o
 
 EvaluateToDouble.o: EvaluateToDouble.cpp EvaluateToDouble.h MutationOptions.h
 	$(compile)
@@ -34,3 +34,5 @@ VariableDouble.o: VariableDouble.cpp VariableDouble.h EvaluateToDouble.h
 Function.o: Function.cpp Function.h MutationOptions.h FunctionEnum.h EvaluateToDouble.h
 	$(compile) 
 
+Generator.o: Generator.cpp EvaluateToDouble.h SimpleDouble.h FunctionEvaluator.h VariableDouble.h EvaluateToDouble.h
+	$(compile) 

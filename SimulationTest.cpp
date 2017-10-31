@@ -4,7 +4,9 @@
 
 #include "MutableFunctionSubject.h"
 #include "MutationOptions.h"
+#include "Generator.h"
 #include "FunctionSupply.h"
+#include "CppFunctorSupply.h"
 #include "VariableDouble.h"
 #include "EvaluateToDouble.h"
 #include "SimpleDouble.h"
@@ -26,39 +28,49 @@ using mutableFuncObj = unique_ptr<MutableFuncs::EvaluateToDouble>;
 
 static int BAIL_NUM = 5;
 
+
+class Fibonacci
+{
+public:
+	Fibonacci ()
+	{
+		//Populate array
+		solutions[0] = 0;
+		solutions[1] = 1;
+		for(int i = 2; i < 110; ++i)
+		{
+			solutions[i] = solutions[i - 1] + solutions[i - 2];
+		}
+	}
+
+	double operator()(vector<double>& variables)
+	{
+		double exact = variables[0];
+		int lowerBound = (int)floor(exact);
+		int upperBound = (int)ceil(exact);
+
+		//Linearly interpolate between the integers
+		double delta = exact - (double)lowerBound;
+		return (delta) * solutions[upperBound]
+				+ (1 - delta) * solutions[lowerBound];
+	}
+private:
+	int solutions[110];
+};
+
 int main()
 {
 	srand(time(NULL));
 	vector<unique_ptr<EvoAlg::Subject> > subjects;
 
-	vector< mutableFuncObj > mainArgs;
-
-	vector< mutableFuncObj > xArgs;
-    xArgs.push_back(mutableFuncObj(new MutableFuncs::VariableDouble('x')));
-	xArgs.push_back(mutableFuncObj(new MutableFuncs::SimpleDouble(2)));
-	mainArgs.push_back(mutableFuncObj(new MutableFuncs::FunctionEvaluator(xArgs.begin(), xArgs.end(), MutableFuncs::FunctionEnum::Multiplication)));
+	MutableFuncs::Generator toTestObjectGenerator;
 	
-	vector< mutableFuncObj > yArgs;
-    yArgs.push_back(mutableFuncObj(new MutableFuncs::VariableDouble('y')));
-	yArgs.push_back(mutableFuncObj(new MutableFuncs::SimpleDouble(5)));
-	mainArgs.push_back(mutableFuncObj(new MutableFuncs::FunctionEvaluator(yArgs.begin(), yArgs.end(), MutableFuncs::FunctionEnum::Multiplication)));
+	ifstream toFitBatch("ToFitBatch.txt");
+	toTestObjectGenerator.Run(toFitBatch);
+	toFitBatch.close();
 
-
-    mutableFuncObj toTestObjectHard(
-            new MutableFuncs::FunctionEvaluator(mainArgs.begin(),
-                                    mainArgs.end(),
-                                    MutableFuncs::FunctionEnum::Addition));
-
-    vector< mutableFuncObj > args;
-    args.push_back(mutableFuncObj(new MutableFuncs::VariableDouble('x')));
-    args.push_back(mutableFuncObj(new MutableFuncs::SimpleDouble(10)));
-
-    mutableFuncObj toTestObjectEasy(
-        new MutableFuncs::FunctionEvaluator(args.begin(),
-                                args.end(),
-                                MutableFuncs::FunctionEnum::Addition));
-
-    FunctionSupply toTest(std::move(toTestObjectHard), -1000, 1000, 25);
+    FunctionSupply toTestBatch(std::move(toTestObjectGenerator.CopyObject("fit")), -1000, 1000, 25);
+	CppFunctorSupply<Fibonacci> toTestFib(Fibonacci(), 0, 100, 25, 1);
 
     MutableFuncs::MutationOptions opt;
 	MutableFuncs::MutationOptions currentOpt;
@@ -66,40 +78,7 @@ int main()
     //Load from defaultMutationValues.txt
 	ifstream valueReader("DefaultMutationValues.txt");
     
-    //Ignore Header
-    valueReader.ignore(250, '\n');
-
-    //Ignore Tag
-    valueReader.ignore(250, ' ');
-    valueReader >> opt.simpleDoubleShift;
-
-    //Functions
-    valueReader.ignore(250, ' ');
-    valueReader >> opt.AdditionIdentityChance;
-
-    valueReader.ignore(250, ' ');
-    valueReader >> opt.SubtractionIdentityChance;
-
-    valueReader.ignore(250, ' ');
-    valueReader >> opt.MultiplicationIdentityChance;
-
-    valueReader.ignore(250, ' ');
-    valueReader >> opt.DivisionIdentityChance;
-
-    opt.SumOfChances = ceil(opt.AdditionIdentityChance + opt.SubtractionIdentityChance + opt.MultiplicationIdentityChance + opt.DivisionIdentityChance);
-
-	valueReader.ignore(250, ' ');
-	valueReader >> opt.ExpectedIdentities;
-
-    //end functions
-    valueReader.ignore(250, ' ');
-    valueReader >> opt.InputIdentityChance;
-
-    valueReader.ignore(250, ' ');
-    valueReader >> opt.ExpectedReduction;
-
-	valueReader.ignore(250, ' ');
-	valueReader >> opt.IterationChange;
+    MutableFuncs::MutationOptions::ReadInput(opt, valueReader);
 	
     valueReader.close();
 
@@ -111,7 +90,7 @@ int main()
 
     for(int i = 0; i < subjectCount; ++i)
     {
-        unique_ptr<EvoAlg::Subject> temp(new MutableFunctionSubject(&currentOpt, &toTest));
+        unique_ptr<EvoAlg::Subject> temp(new MutableFunctionSubject(&currentOpt, &toTestFib));
         subjects.push_back(std::move(temp));
     }
     
@@ -155,13 +134,13 @@ int main()
 				
 
 				//Kill bad ones and replace with good ones
-				for(unsigned int j = 0; j < subjects.size()/4; ++j)
+				for(unsigned int j = 0; j < subjects.size()/2; ++j)
 				{
 					subjects[subjects.size() - 1 - j].reset(nullptr);
-					subjects[subjects.size() - 1 - j] = std::move(subjects[j]->Clone());
+					subjects[subjects.size() - 1 - j] = std::move(subjects[j]->Clone());	
 				}
 				
-				toTest.NextGeneration(generation);
+				toTestFib.NextGeneration(generation);
 				
 				
 				//currentOpt.simpleDoubleShift /= currentOpt.IterationChange;
@@ -181,7 +160,7 @@ int main()
 			std::sort(subjects.rbegin(), subjects.rend(), EvoAlg::Subject::SubjectComparator(generation));    
 			
             cout << "Generation " << generation << endl;
-			for(unsigned int i = subjects.size() - 10; i < subjects.size(); ++i)
+			for(int i = max((int)(subjects.size()) - 10, 0); i < (int)subjects.size(); ++i)
 			{
 				subjects[i]->Print(cout);
 				cout << " " << subjects[i]->Evaluate(generation) << endl;

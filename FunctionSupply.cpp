@@ -1,36 +1,18 @@
 #include "FunctionSupply.h"
 
-FunctionSupply::FunctionSupply(std::unique_ptr<MutableFuncs::EvaluateToDouble> func_in, int min_in, int max_in, int sampleSize_in) : func(move(func_in)), min(min_in), max(max_in), sampleSize(sampleSize_in)
+FunctionSupply::FunctionSupply(std::unique_ptr<MutableFuncs::EvaluateToDouble> func_in, int min_in, int max_in, int sampleSize_in)
+: RangedFunctoralSupplier(min_in, max_in, sampleSize_in), func(std::move(func_in))
+{ }
+
+double FunctionSupply::GenerateValue(std::unordered_map<char, double>& inputs)
 {
-	func->CollectVariables(variablesUsed);
-	values.resize(sampleSize);
-	variableValues.resize(sampleSize);
-	NextGeneration(0);
+	return func->GetDouble(inputs);
 }
 
-void FunctionSupply::NextGeneration(int generationNumber) 
+//This is the implementation which decides how many and named what the variables are
+std::unordered_set<char> FunctionSupply::GetVariables()
 {
-	int range = max - min;
-	variableValues.clear();
-
-	for(int i = 0; i < sampleSize; ++i)
-	{
-		for(auto it = variablesUsed.begin(); it != variablesUsed.end(); ++it)
-		{
-			variableValues[i][*it] = (rand() % range) + min;
-		}
-
-		values[i] = func->GetDouble(variableValues[i]);
-	}
-}
-
-std::pair<std::vector<std::unordered_map<char, double> >*, std::vector<double>* > FunctionSupply::GetValues()
-{
-	std::pair<std::vector<std::unordered_map<char, double> >*, std::vector<double>* > toReturn(&variableValues, &values);
-	return toReturn;
-}
-
-const std::unordered_set<char>& FunctionSupply::PeakVariables()
-{
-	return variablesUsed;
+	std::unordered_set<char> variables;
+	func->CollectVariables(variables);
+	return variables;
 }

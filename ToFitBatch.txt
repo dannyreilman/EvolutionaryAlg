@@ -1,0 +1,1 @@
+move gen add gen mult 5 gen input y gen mult 2 gen input x fit

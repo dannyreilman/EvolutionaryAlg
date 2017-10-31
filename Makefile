@@ -19,7 +19,7 @@ MutableFunctionAll = MutableFunctions/bin/*.o
 Driver: MutableFuncDriver.cpp $(MutableFunctionAll)
 	$(CXX) $(CXXFLAGS) $(MutableFunctionsFlag) $(EvolutionaryFlag) $^ -o $(MutableFuncDriverName)
 
-SimulationTest.exe: SimulationTest.cpp MutableFunctionSubject.cpp FunctionSupply.cpp $(MutableFunctionAll)
+SimulationTest.exe: SimulationTest.cpp MutableFunctionSubject.cpp FunctionSupply.cpp RangedFunctoralSupplier.cpp CppFunctorSupply.h $(MutableFunctionAll)
 	$(CXX) $(MutableFunctionsFlag)  $(EvolutionaryFlag) $(CXXFLAGS)  $^ -o $@
 
 clean: 
