@@ -58,6 +58,7 @@ private:
 	int solutions[110];
 };
 
+
 int main()
 {
 	srand(time(NULL));
@@ -70,7 +71,7 @@ int main()
 	toFitBatch.close();
 
     FunctionSupply toTestBatch(std::move(toTestObjectGenerator.CopyObject("fit")), -1000, 1000, 25);
-	CppFunctorSupply<Fibonacci> toTestFib(Fibonacci(), 0, 100, 25, 1);
+	CppFunctorSupply<Fibonacci> toTestFib(Fibonacci(), 0,25, 50, 1);
 
     MutableFuncs::MutationOptions opt;
 	MutableFuncs::MutationOptions currentOpt;

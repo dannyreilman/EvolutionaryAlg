@@ -15,10 +15,12 @@ namespace MutableFuncs
         
         double simpleDoubleShift;
         
-        double AdditionIdentityChance;
-        double SubtractionIdentityChance;
-        double MultiplicationIdentityChance;
-        double DivisionIdentityChance;
+        int AdditionIdentityChance;
+        int SubtractionIdentityChance;
+        int MultiplicationIdentityChance;
+        int DivisionIdentityChance;
+        int PowerIdentityChance;
+
         int SumOfChances;
         double ExpectedIdentities;
 
@@ -49,8 +51,11 @@ namespace MutableFuncs
 
             valueReader.ignore(250, ' ');
             valueReader >> opt.DivisionIdentityChance;
+            
+            valueReader.ignore(250, ' ');
+            valueReader >> opt.PowerIdentityChance;
 
-            opt.SumOfChances = ceil(opt.AdditionIdentityChance + opt.SubtractionIdentityChance + opt.MultiplicationIdentityChance + opt.DivisionIdentityChance);
+            opt.SumOfChances = ceil(opt.AdditionIdentityChance + opt.SubtractionIdentityChance + opt.MultiplicationIdentityChance + opt.DivisionIdentityChance + opt.PowerIdentityChance);
 
             valueReader.ignore(250, ' ');
             valueReader >> opt.ExpectedIdentities;

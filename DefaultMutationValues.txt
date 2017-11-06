@@ -4,6 +4,7 @@ AdditionIdentityProduction 25
 SubtractionIdentityProduction 25
 MultiplicationIdentityProduction 25
 DivisionIdentityProduction 25
+PowerIdentityProduction 25
 ExpectedIdentities 0.1
 InputIdentityChance 50
 ExpectedReduction 0.1

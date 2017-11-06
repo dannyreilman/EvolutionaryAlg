@@ -660,6 +660,10 @@ static unique_ptr<EvaluateToDouble> GenerateCommand(std::istream& terms, Generat
 		{
 			funcEnum = FunctionEnum::Division;
 		}
+		else if(term1.compare("pow") == 0 || term1.compare("power") == 0)
+		{
+			funcEnum = FunctionEnum::Power;
+		}
 		else
 		{
 			throw std::invalid_argument("Not implemented function found");

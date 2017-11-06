@@ -12,8 +12,8 @@
 static double ACCURACY_WEIGHT = 1;
 static double BREVITY_WEIGHT = 0.25;
 
+//Variables contribute 2 to complexity, doubles give up to 1
 static double COMPLEXITY_WEIGHT = 0;
-static int CAP_GENERATION = 50;
 static double COMPLEXITY_GRAIN = 0.25;
 
 //Loss function used
@@ -56,19 +56,19 @@ double MutableFunctionSubject::Evaluate(int generation)
 	double average = 0;
 	for(unsigned int i = 0; i < values->size(); ++i)
 	{	
-		average += Loss(mutableFuncObject->GetDouble((*variables)[i]), (*values)[i]);
+		average += Loss(mutableFuncObject->GetDouble((*variables)[i]), (*values)[i]) / values->size();
 	}
-
-	average /= values->size();
 
 	//Accuracy -> Loss
 	//Brevity weight -> Normalization using Number of elements
 	//Complexity Weight -> Normalization based on roundness of numbers, scales up and caps at cap generation
-	double averageComplexity = mutableFuncObject->GetComplexity(COMPLEXITY_GRAIN) / mutableFuncObject->GetSize();
+	//averageComplexity-> variables give 2, numbers give between 0 and 1
+	double averageComplexity = mutableFuncObject->GetComplexity(COMPLEXITY_GRAIN) / (mutableFuncObject->GetSize() * COMPLEXITY_GRAIN);
 
-	return ACCURACY_WEIGHT * average 
-		+ BREVITY_WEIGHT * mutableFuncObject->GetSize()
-		+ std::min(CAP_GENERATION, generation) * COMPLEXITY_WEIGHT * averageComplexity;
+	//(Wa + WcAvg * C + Wb * b)a
+	return average *
+		(ACCURACY_WEIGHT + mutableFuncObject->GetSize() *
+		(BREVITY_WEIGHT +  COMPLEXITY_WEIGHT * averageComplexity));
 }
 
 void MutableFunctionSubject::Print(std::ostream& out) const

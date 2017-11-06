@@ -9,7 +9,8 @@ namespace MutableFuncs
         Addition,
         Subtraction,
         Multiplication,
-        Division
+        Division,
+        Power
     };
 }
 #endif

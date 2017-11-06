@@ -26,16 +26,19 @@ static int ADDITION_SUPPORTED_ARGS = 2;
 static int SUBTRACTION_SUPPORTED_ARGS = 2;
 static int MULTIPLICATION_SUPPORTED_ARGS = 2;
 static int DIVISION_SUPPORTED_ARGS = 2;
+static int POWER_SUPPORTED_ARGS = 2;
 
 static double ADDITION_IDENTITY = 0.0;
 static double SUBTRACTION_IDENTITY = 0.0;
 static double MULTIPLICATION_IDENTITY = 1.0;
 static double DIVISION_IDENTITY = 1.0;
+static double POWER_IDENTITY = 1.0;
 
 static std::string ADDITION_COMMAND = "add";
 static std::string SUBTRACTION_COMMAND = "sub";
 static std::string MULTIPLICATION_COMMAND = "mult";
 static std::string DIVISION_COMMAND = "div";
+static std::string POWER_COMMAND = "pow";
 
 namespace MutableFuncs
 {
@@ -51,6 +54,8 @@ namespace MutableFuncs
 				return MULTIPLICATION_SUPPORTED_ARGS;
 			case FunctionEnum::Division:
 				return DIVISION_SUPPORTED_ARGS;
+			case FunctionEnum::Power:
+				return POWER_SUPPORTED_ARGS;
 			default:
 				throw StringException("GetFunctionInformation", "Info not implemented");
 		}
@@ -71,6 +76,8 @@ namespace MutableFuncs
 				return true;
 			case FunctionEnum::Division:
 				return false;
+			case FunctionEnum::Power:
+				return false;
 			default:
 				throw StringException("GetFunctionInformation", "Info not implemented");
 		}
@@ -89,6 +96,8 @@ namespace MutableFuncs
 				return MULTIPLICATION_IDENTITY;
 			case FunctionEnum::Division:
 				return DIVISION_IDENTITY;
+			case FunctionEnum::Power:
+				return POWER_IDENTITY;
 			default:
 				throw StringException("GetFunctionInformation", "Info not implemented");
 		}
@@ -107,6 +116,8 @@ namespace MutableFuncs
 				return MULTIPLICATION_COMMAND;
 			case FunctionEnum::Division:
 				return DIVISION_COMMAND;
+			case FunctionEnum::Power:
+				return POWER_COMMAND;
 			default:
 				throw StringException("GetGenerativeCommand", "Info not implemented");
 		}
@@ -126,6 +137,8 @@ namespace MutableFuncs
 				return args[0]->GetDouble(variables) * args[1]->GetDouble(variables);
 			case FunctionEnum::Division:
 				return args[0]->GetDouble(variables) / args[1]->GetDouble(variables);
+			case FunctionEnum::Power:
+				return std::pow(args[0]->GetDouble(variables), args[1]->GetDouble(variables));
 			default:
 				throw StringException("Eval", "Evaluation not implemented");
 		}
@@ -144,6 +157,8 @@ namespace MutableFuncs
 				return "(" + args[0]->Print() + " * " + args[1]->Print() + ")";
 			case FunctionEnum::Division:
 				return "(" + args[0]->Print() + " / " + args[1]->Print() + ")";
+			case FunctionEnum::Power:
+				return "(" + args[0]->Print() + " ^ " + args[1]->Print() + ")";
 			default:
 				throw StringException("Eval", "Evaluation not implemented");
 		}
@@ -231,6 +246,16 @@ namespace MutableFuncs
 					return move(MakeInputIdentity(FunctionEnum::Division, arg, opt.validInputMutations));
 				}
 				return move(MakeIdentity(FunctionEnum::Division, arg));
+			}
+
+			sum += opt.PowerIdentityChance;
+			if(identityChoice < sum)
+			{
+				if(numInput < opt.InputIdentityChance && opt.validInputMutations.size() > 0)
+				{
+					return move(MakeInputIdentity(FunctionEnum::Power, arg, opt.validInputMutations));
+				}
+				return move(MakeIdentity(FunctionEnum::Power, arg));
 			}
 		}
 
